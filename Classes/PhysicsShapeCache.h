@@ -28,14 +28,12 @@ private:
     ~PhysicsShapeCache();
     bool safeDeleteBodyDef(BodyDef *bodyDef);
 
-    
     Map<std::string, BodyDef *> bodyDefs;
 };
 
 typedef enum
 {
     FIXTURE_POLYGON,
-    FIXTURE_POLYLINE,
     FIXTURE_CIRCLE
 } FixtureType;
 
@@ -45,9 +43,6 @@ class Polygon : public Ref
   public:
     Point* vertices;
     int numVertices;
-    float area;
-    float mass;
-    float momentum;
 };
 
 
@@ -56,19 +51,16 @@ class FixtureData : public Ref
   public:
     FixtureType fixtureType;
     
-    float mass;
-    float elasticity;
+    float density;
+    float restitution;
     float friction;
     
+    int tag;
     int group;
     int categoryMask;
     int collisionMask;
+    int contactTestMask;
 
-    bool isSensor;
-    int layers;
-    float area;            
-    float momentum;        
-    
     // for circles
     Point center;          
     float radius;          
@@ -83,12 +75,13 @@ class BodyDef : public Ref
 public:
     Point anchorPoint;
     Vector<FixtureData *> fixtures;
+    
     bool isDynamic;
     bool affectedByGravity;
     bool allowsRotation;
     
-    float mass;
-    float momentum;
+    float linearDamping;
+    float angularDamping;
 };
 NS_CC_END
 

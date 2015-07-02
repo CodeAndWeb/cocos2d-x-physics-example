@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-    <key>metadata</key>
+        <key>metadata</key>
         <dict>
             <key>format</key>
             <integer>1</integer>
@@ -57,31 +57,33 @@
                 <true/>
                 <key>allows_rotation</key>
                 <true/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>angular_damping</key>
+                <real>0</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
-                        <key>mass</key>
+                        <key>density</key>
                         <real>1</real>
-                        <key>elasticity</key>
-                        <real>0.5</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>2</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>POLYGON</string>
+                        
                         <key>polygons</key>
                         <array>
                             <array>
@@ -134,31 +136,33 @@
                 <true/>
                 <key>allows_rotation</key>
                 <true/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>angular_damping</key>
+                <real>0</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
-                        <key>mass</key>
-                        <real>0.3</real>
-                        <key>elasticity</key>
-                        <real>0.5</real>
+                        <key>density</key>
+                        <real>1</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>2</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>CIRCLE</string>
+                        
                         <key>circle</key>
                         <dict>
                             <key>radius</key>
@@ -170,27 +174,25 @@
                     </dict>
 
                     <dict>
-                        <key>mass</key>
+                        <key>density</key>
                         <real>1</real>
-                        <key>elasticity</key>
-                        <real>0.9</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>2</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>CIRCLE</string>
+                        
                         <key>circle</key>
                         <dict>
                             <key>radius</key>
@@ -202,27 +204,25 @@
                     </dict>
 
                     <dict>
-                        <key>mass</key>
+                        <key>density</key>
                         <real>1</real>
-                        <key>elasticity</key>
-                        <real>0.8</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>2</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>POLYGON</string>
+                        
                         <key>polygons</key>
                         <array>
                             <array>
@@ -274,31 +274,33 @@
                 <true/>
                 <key>allows_rotation</key>
                 <true/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>angular_damping</key>
+                <real>0</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
-                        <key>mass</key>
-                        <real>20</real>
-                        <key>elasticity</key>
+                        <key>density</key>
+                        <real>5</real>
+                        <key>restitution</key>
                         <real>0.2</real>
                         <key>friction</key>
                         <real>0.2</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>4</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>POLYGON</string>
+                        
                         <key>polygons</key>
                         <array>
                             <array>
@@ -324,31 +326,33 @@
                 <false/>
                 <key>allows_rotation</key>
                 <false/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>angular_damping</key>
+                <real>0</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
-                        <key>mass</key>
+                        <key>density</key>
                         <real>1</real>
-                        <key>elasticity</key>
-                        <real>0.5</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>1</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>POLYGON</string>
+                        
                         <key>polygons</key>
                         <array>
                             <array>
@@ -552,31 +556,33 @@
                 <true/>
                 <key>allows_rotation</key>
                 <true/>
+                <key>linear_damping</key>
+                <real>0</real>
+                <key>angular_damping</key>
+                <real>0</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
-                        <key>mass</key>
+                        <key>density</key>
                         <real>1</real>
-                        <key>elasticity</key>
-                        <real>0.5</real>
+                        <key>restitution</key>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
-                        <key>surface_velocity</key>
-                        <string>{ 0.00000,0.00000 }</string>
-                        <key>corner_radius</key>
-                        <real>0</real>
+                        <key>tag</key>
+                        <integer>0</integer>
+                        <key>group</key>
+                        <integer>0</integer>
                         <key>category_mask</key>
                         <integer>2</integer>
                         <key>collision_mask</key>
                         <integer>7</integer>
-                        <key>group</key>
-                        <string>0</string>
-                        <key>is_sensor</key>
-                        <false/>
-                        
+                        <key>contact_test_mask</key>
+                        <integer>0</integer>
                         <key>fixture_type</key>
                         <string>CIRCLE</string>
+                        
                         <key>circle</key>
                         <dict>
                             <key>radius</key>
