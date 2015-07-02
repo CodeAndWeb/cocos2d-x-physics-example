@@ -8,6 +8,7 @@ Scene* HelloWorld::createScene()
     // 'scene' is an autorelease object
     auto scene = Scene::createWithPhysics();
     scene->getPhysicsWorld()->setGravity(Vec2(0, -900));
+    //scene->getPhysicsWorld()->setDebugDrawMask(0xffff);
     
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
@@ -35,8 +36,9 @@ bool HelloWorld::init()
     {
         return false;
     }
-    auto center = Director::getInstance()->getWinSize() / 2;
-
+    auto center = Vec2(Director::getInstance()->getWinSize()) / 2 +
+                  Director::getInstance()->getVisibleOrigin();
+    
     // Load shapes
     shapeCache = PhysicsShapeCache::getInstance();
     shapeCache->addShapesWithFile("Shapes.plist");
