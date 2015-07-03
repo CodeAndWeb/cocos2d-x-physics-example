@@ -7,8 +7,6 @@
             <key>format</key>
             <integer>1</integer>
         </dict>
-        <key>scale_factor</key>
-        <real>2</real>
         <key>category_names</key>
         <array>
             <string>ground</string>
