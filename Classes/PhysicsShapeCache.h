@@ -1,14 +1,15 @@
-
+//
+// PhysicsShapeCache.h
+//
 
 #ifndef __PhysicsShapeCache_h__
 #define __PhysicsShapeCache_h__
-#include <iostream>
 #include "cocos2d.h"
-#include <unordered_map>
 
-NS_CC_BEGIN
-class PhysicsBody;
+USING_NS_CC;
 class BodyDef;
+class FixtureData;
+
 
 class PhysicsShapeCache
 {
@@ -17,6 +18,7 @@ class PhysicsShapeCache
     static void destroyInstance();
 
     bool addShapesWithFile(const std::string &plist);
+    bool addShapesWithFile(const std::string &plist, float scaleFactor);
     bool removeShapesWithFile(const std::string &plist);
     bool removeAllShapes();
 
@@ -27,9 +29,13 @@ private:
     PhysicsShapeCache();
     ~PhysicsShapeCache();
     bool safeDeleteBodyDef(BodyDef *bodyDef);
+    BodyDef *getBodyDef(const std::string &name);
+    void setBodyProperties(PhysicsBody *body, BodyDef *bd);
+    void setShapeProperties(PhysicsShape *shape, FixtureData *fd);
 
     Map<std::string, BodyDef *> bodyDefs;
 };
+
 
 typedef enum
 {
@@ -83,6 +89,6 @@ public:
     float linearDamping;
     float angularDamping;
 };
-NS_CC_END
 
-#endif /* defined(__PhysicsShapeCache_h__) */
+
+#endif // __PhysicsShapeCache_h

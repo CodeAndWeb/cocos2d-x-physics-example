@@ -36,8 +36,8 @@ bool HelloWorld::init()
     {
         return false;
     }
-    auto center = Vec2(Director::getInstance()->getWinSize()) / 2 +
-                  Director::getInstance()->getVisibleOrigin();
+    auto pos = Vec2(Director::getInstance()->getWinSize()) / 2 +
+               Director::getInstance()->getVisibleOrigin();
     
     // Load shapes
     shapeCache = PhysicsShapeCache::getInstance();
@@ -45,12 +45,12 @@ bool HelloWorld::init()
     
     // Load background image
     Sprite *background = Sprite::create("background.png");
-    background->setPosition(center);
+    background->setPosition(pos);
     addChild(background);
 
     // Add ground sprite and drop a banana
-    spawnSprite("ground.png", center);
-    spawnSprite("banana.png", center);
+    spawnSprite("ground.png", pos);
+    spawnSprite("banana.png", pos);
     
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchesBegan, this);

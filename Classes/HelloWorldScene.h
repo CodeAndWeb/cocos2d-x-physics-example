@@ -24,7 +24,7 @@ private:
     void spawnSprite(const std::string &name, cocos2d::Vec2 pos);
     bool onTouchesBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 
-    cocos2d::PhysicsShapeCache *shapeCache;
+    PhysicsShapeCache *shapeCache;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

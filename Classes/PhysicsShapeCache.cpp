@@ -1,11 +1,8 @@
 //
 //  PhysicsShapeCache.cpp
 //
-#include "PhysicsShapeCache.h"
-#include "CCPhysicsHelper.h"
 
-using namespace cocos2d;
-static PhysicsShapeCache *_instance = nullptr;
+#include "PhysicsShapeCache.h"
 
 
 PhysicsShapeCache::PhysicsShapeCache()
@@ -21,21 +18,19 @@ PhysicsShapeCache::~PhysicsShapeCache()
 
 PhysicsShapeCache *PhysicsShapeCache::getInstance()
 {
-    if (!_instance)
-    {
-        _instance = new PhysicsShapeCache();
-    }
-    return _instance;
-}
-
-
-void PhysicsShapeCache::destroyInstance()
-{
-    CC_SAFE_DELETE(_instance);
+    static PhysicsShapeCache instance;
+    return &instance;
 }
 
 
 bool PhysicsShapeCache::addShapesWithFile(const std::string &plist)
+{
+    float scaleFactor = Director::getInstance()->getContentScaleFactor();
+    return addShapesWithFile(plist, scaleFactor);
+}
+
+
+bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleFactor)
 {
     ValueMap dict = FileUtils::getInstance()->getValueMapFromFile(plist);
     if (dict.empty())
@@ -51,7 +46,6 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist)
         CCASSERT(format == 1, "format not supported!");
         return false;
     }
-    float scaleFactor = dict["scale_factor"].asFloat();
     
     ValueMap &bodydict = dict.at("bodies").asValueMap();
     for (auto iter = bodydict.cbegin(); iter != bodydict.cend(); ++iter)
@@ -60,12 +54,12 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist)
         std::string bodyName = iter->first;
         BodyDef *bodyDef = new BodyDef();
         bodyDefs.insert(bodyName, bodyDef);
-        bodyDef->anchorPoint = PointFromString(bodyData.at("anchorpoint").asString());
-        bodyDef->isDynamic = bodyData.at("is_dynamic").asBool();
+        bodyDef->anchorPoint       = PointFromString(bodyData.at("anchorpoint").asString());
+        bodyDef->isDynamic         = bodyData.at("is_dynamic").asBool();
         bodyDef->affectedByGravity = bodyData.at("affected_by_gravity").asBool();
-        bodyDef->allowsRotation = bodyData.at("allows_rotation").asBool();
-        bodyDef->linearDamping = bodyData.at("linear_damping").asFloat();
-        bodyDef->angularDamping = bodyData.at("angular_damping").asFloat();
+        bodyDef->allowsRotation    = bodyData.at("allows_rotation").asBool();
+        bodyDef->linearDamping     = bodyData.at("linear_damping").asFloat();
+        bodyDef->angularDamping    = bodyData.at("angular_damping").asFloat();
 
         const ValueVector &fixtureList = bodyData.at("fixtures").asValueVector();
         for (auto &fixtureitem : fixtureList)
@@ -73,33 +67,33 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist)
             FixtureData *fd = new FixtureData();
             bodyDef->fixtures.pushBack(fd);
             auto &fixturedata = fixtureitem.asValueMap();
-            fd->density = fixturedata.at("density").asFloat();
-            fd->restitution = fixturedata.at("restitution").asFloat();
-            fd->friction = fixturedata.at("friction").asFloat();
-            fd->tag = fixturedata.at("tag").asInt();
-            fd->group = fixturedata.at("group").asInt();
-            fd->categoryMask = fixturedata.at("category_mask").asInt();
-            fd->collisionMask = fixturedata.at("collision_mask").asInt();
+            fd->density         = fixturedata.at("density").asFloat();
+            fd->restitution     = fixturedata.at("restitution").asFloat();
+            fd->friction        = fixturedata.at("friction").asFloat();
+            fd->tag             = fixturedata.at("tag").asInt();
+            fd->group           = fixturedata.at("group").asInt();
+            fd->categoryMask    = fixturedata.at("category_mask").asInt();
+            fd->collisionMask   = fixturedata.at("collision_mask").asInt();
             fd->contactTestMask = fixturedata.at("contact_test_mask").asInt();
             
             std::string fixtureType = fixturedata.at("fixture_type").asString();
             if (fixtureType == "POLYGON")
             {
-                const ValueVector &polygonsArray = fixturedata.at("polygons").asValueVector();
                 fd->fixtureType = FIXTURE_POLYGON;
+                const ValueVector &polygonsArray = fixturedata.at("polygons").asValueVector();
                 for (auto &polygonitem : polygonsArray)
                 {
                     Polygon *poly = new Polygon();
                     fd->polygons.pushBack(poly);
                     auto &polygonArray = polygonitem.asValueVector();
                     poly->numVertices = (int)polygonArray.size();
-                    Point *vertices = poly->vertices = new Point[poly->numVertices];
+                    auto *vertices = poly->vertices = new cocos2d::Point[poly->numVertices];
                     int vindex = 0;
                     for (auto &pointString : polygonArray)
                     {
-                        Point offsex = PointFromString(pointString.asString());
-                        vertices[vindex].x = offsex.x / scaleFactor;
-                        vertices[vindex].y = offsex.y / scaleFactor;
+                        auto offset = PointFromString(pointString.asString());
+                        vertices[vindex].x = offset.x / scaleFactor;
+                        vertices[vindex].y = offset.y / scaleFactor;
                         vindex++;
                     }
                 }
@@ -123,23 +117,46 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist)
 }
 
 
-PhysicsBody *PhysicsShapeCache::createBodyWithName(const std::string &name)
+BodyDef *PhysicsShapeCache::getBodyDef(const std::string &name)
 {
     BodyDef *bd = bodyDefs.at(name);
     if (!bd)
     {
-        bd = bodyDefs.at(name.substr(0, name.rfind('.')));
+        bd = bodyDefs.at(name.substr(0, name.rfind('.'))); // remove file suffix and try again...
     }
-    if (!bd)
-    {
-        return 0; // body not found
-    }
-    PhysicsBody *body = PhysicsBody::create();
+    return bd;
+}
+
+
+void PhysicsShapeCache::setBodyProperties(PhysicsBody *body, BodyDef *bd)
+{
     body->setGravityEnable(bd->affectedByGravity);
     body->setDynamic(bd->isDynamic);
     body->setRotationEnable(bd->allowsRotation);
     body->setLinearDamping(bd->linearDamping);
     body->setAngularDamping(bd->angularDamping);
+}
+
+
+void PhysicsShapeCache::setShapeProperties(PhysicsShape *shape, FixtureData *fd)
+{
+    shape->setGroup(fd->group);
+    shape->setCategoryBitmask(fd->categoryMask);
+    shape->setCollisionBitmask(fd->collisionMask);
+    shape->setContactTestBitmask(fd->contactTestMask);
+    shape->setTag(fd->tag);
+}
+
+
+PhysicsBody *PhysicsShapeCache::createBodyWithName(const std::string &name)
+{
+    BodyDef *bd = getBodyDef(name);
+    if (!bd)
+    {
+        return 0; // body not found
+    }
+    PhysicsBody *body = PhysicsBody::create();
+    setBodyProperties(body, bd);
     
     for (auto fd : bd->fixtures)
     {
@@ -147,11 +164,7 @@ PhysicsBody *PhysicsShapeCache::createBodyWithName(const std::string &name)
         if (fd->fixtureType == FIXTURE_CIRCLE)
         {
             auto shape = PhysicsShapeCircle::create(fd->radius, material, fd->center);
-            shape->setGroup(fd->group);
-            shape->setCategoryBitmask(fd->categoryMask);
-            shape->setCollisionBitmask(fd->collisionMask);
-            shape->setContactTestBitmask(fd->contactTestMask);
-            shape->setTag(fd->tag);
+            setShapeProperties(shape, fd);
             body->addShape(shape);
         }
         else if (fd->fixtureType == FIXTURE_POLYGON)
@@ -159,11 +172,7 @@ PhysicsBody *PhysicsShapeCache::createBodyWithName(const std::string &name)
             for (auto polygon : fd->polygons)
             {
                 auto shape = PhysicsShapePolygon::create(polygon->vertices, polygon->numVertices, material, fd->center);
-                shape->setGroup(fd->group);
-                shape->setCategoryBitmask(fd->categoryMask);
-                shape->setCollisionBitmask(fd->collisionMask);
-                shape->setContactTestBitmask(fd->contactTestMask);
-                shape->setTag(fd->tag);
+                setShapeProperties(shape, fd);
                 body->addShape(shape);
             }
         }
@@ -178,8 +187,9 @@ bool PhysicsShapeCache::setBodyOnSprite(const std::string &name, Sprite *sprite)
     if (body)
     {
         sprite->setPhysicsBody(body);
-        // Cocos2d-x 3.6 does not support custsom anchor points when using physics
-        //sprite->setAnchorPoint(bodyDefs.at(name)->anchorPoint);
+        // Cocos2d-x 3.6 does not support custom anchor points when using sprites with PhysicsBodies;
+        // this call will hopefully have an effect with Cocos2d-x 3.7:
+        sprite->setAnchorPoint(getBodyDef(name)->anchorPoint);
     }
     return body != 0;
 }
