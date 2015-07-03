@@ -88,6 +88,8 @@ public:
     
     float linearDamping;
     float angularDamping;
+    float velocityLimit;
+    float angularVelocityLimit;
 };
 
 

@@ -54,12 +54,14 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleF
         std::string bodyName = iter->first;
         BodyDef *bodyDef = new BodyDef();
         bodyDefs.insert(bodyName, bodyDef);
-        bodyDef->anchorPoint       = PointFromString(bodyData.at("anchorpoint").asString());
-        bodyDef->isDynamic         = bodyData.at("is_dynamic").asBool();
-        bodyDef->affectedByGravity = bodyData.at("affected_by_gravity").asBool();
-        bodyDef->allowsRotation    = bodyData.at("allows_rotation").asBool();
-        bodyDef->linearDamping     = bodyData.at("linear_damping").asFloat();
-        bodyDef->angularDamping    = bodyData.at("angular_damping").asFloat();
+        bodyDef->anchorPoint          = PointFromString(bodyData.at("anchorpoint").asString());
+        bodyDef->isDynamic            = bodyData.at("is_dynamic").asBool();
+        bodyDef->affectedByGravity    = bodyData.at("affected_by_gravity").asBool();
+        bodyDef->allowsRotation       = bodyData.at("allows_rotation").asBool();
+        bodyDef->linearDamping        = bodyData.at("linear_damping").asFloat();
+        bodyDef->angularDamping       = bodyData.at("angular_damping").asFloat();
+        bodyDef->velocityLimit        = bodyData.at("velocity_limit").asFloat();
+        bodyDef->angularVelocityLimit = bodyData.at("angular_velocity_limit").asFloat();
 
         const ValueVector &fixtureList = bodyData.at("fixtures").asValueVector();
         for (auto &fixtureitem : fixtureList)
@@ -135,6 +137,8 @@ void PhysicsShapeCache::setBodyProperties(PhysicsBody *body, BodyDef *bd)
     body->setRotationEnable(bd->allowsRotation);
     body->setLinearDamping(bd->linearDamping);
     body->setAngularDamping(bd->angularDamping);
+    body->setVelocityLimit(bd->velocityLimit);
+    body->setAngularVelocityLimit(bd->angularVelocityLimit);
 }
 
 
@@ -187,8 +191,7 @@ bool PhysicsShapeCache::setBodyOnSprite(const std::string &name, Sprite *sprite)
     if (body)
     {
         sprite->setPhysicsBody(body);
-        // Cocos2d-x 3.6 does not support custom anchor points when using sprites with PhysicsBodies;
-        // this call will hopefully have an effect with Cocos2d-x 3.7:
+        // Cocos2d-x 3.7 required for custom anchor points:
         sprite->setAnchorPoint(getBodyDef(name)->anchorPoint);
     }
     return body != 0;

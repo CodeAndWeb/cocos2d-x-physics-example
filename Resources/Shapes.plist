@@ -57,8 +57,12 @@
                 <true/>
                 <key>linear_damping</key>
                 <real>0</real>
+                <key>velocity_limit</key>
+                <real>1000000</real>
                 <key>angular_damping</key>
                 <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1000000</real>
                 <key>fixtures</key>
                 <array>
 
@@ -136,8 +140,12 @@
                 <true/>
                 <key>linear_damping</key>
                 <real>0</real>
+                <key>velocity_limit</key>
+                <real>1e+06</real>
                 <key>angular_damping</key>
                 <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1e+06</real>
                 <key>fixtures</key>
                 <array>
 
@@ -274,8 +282,12 @@
                 <true/>
                 <key>linear_damping</key>
                 <real>0</real>
+                <key>velocity_limit</key>
+                <real>1e+06</real>
                 <key>angular_damping</key>
                 <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1e+06</real>
                 <key>fixtures</key>
                 <array>
 
@@ -326,8 +338,12 @@
                 <false/>
                 <key>linear_damping</key>
                 <real>0</real>
+                <key>velocity_limit</key>
+                <real>1e+06</real>
                 <key>angular_damping</key>
                 <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1e+06</real>
                 <key>fixtures</key>
                 <array>
 
@@ -556,8 +572,12 @@
                 <true/>
                 <key>linear_damping</key>
                 <real>0</real>
+                <key>velocity_limit</key>
+                <real>1e+06</real>
                 <key>angular_damping</key>
                 <real>0</real>
+                <key>angular_velocity_limit</key>
+                <real>1e+06</real>
                 <key>fixtures</key>
                 <array>
 
