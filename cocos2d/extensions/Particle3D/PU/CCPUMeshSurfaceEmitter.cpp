@@ -167,10 +167,10 @@ const PUTriangle::PositionAndNormal PUTriangle::getRandomVertexAndNormal (void)
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------
 //-----------------------------------------------------------------------
-MeshInfo::MeshInfo (const std::string& meshName, 
+MeshInfo::MeshInfo (const std::string& /*meshName*/,
     MeshSurfaceDistribution distribution,
-    const Quaternion& orientation,
-    const Vec3& scale) : 
+    const Quaternion& /*orientation*/,
+    const Vec3& /*scale*/) :
     mDistribution(distribution)
 {
     //Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load(meshName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -216,7 +216,7 @@ const PUTriangle& MeshInfo::getTriangle (size_t triangleIndex)
 }
 
 //-----------------------------------------------------------------------
-const size_t MeshInfo::getRandomTriangleIndex (void)
+size_t MeshInfo::getRandomTriangleIndex()
 {
     size_t index;
     if (mDistribution == MSD_HOMOGENEOUS || mDistribution == MSD_HETEROGENEOUS_1)
@@ -538,7 +538,7 @@ void PUMeshSurfaceEmitter::setMeshName(const std::string& meshName, bool doBuild
     }
 }
 //-----------------------------------------------------------------------
-const MeshInfo::MeshSurfaceDistribution PUMeshSurfaceEmitter::getDistribution (void) const
+MeshInfo::MeshSurfaceDistribution PUMeshSurfaceEmitter::getDistribution() const
 {
     return _distribution;
 }

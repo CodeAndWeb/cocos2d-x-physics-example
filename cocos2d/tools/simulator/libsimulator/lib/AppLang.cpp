@@ -8,9 +8,9 @@
 USING_NS_CC;
 
 AppLang::AppLang()
-    : _hasInit(false)
+    : _hasInit(false),
+    _localizationFileName("lang")
 {
-    _localizationFileName = "lang";
 }
 
 void AppLang::readLocalizationFile()
@@ -33,7 +33,7 @@ void AppLang::readLocalizationFile()
         
         if (_docRootjson.Parse<0>(fileContent.c_str()).HasParseError())
         {
-            cocos2d::log("[WARNING]:read json file %s failed because of %s", _localizationFileName.c_str(), _docRootjson.GetParseError());
+            cocos2d::log("[WARNING]:read json file %s failed because of %d", _localizationFileName.c_str(), _docRootjson.GetParseError());
             return;
         }
     }

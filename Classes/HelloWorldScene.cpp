@@ -1,43 +1,36 @@
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"
 #include "PhysicsShapeCache.h"
 
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
 {
-    // 'scene' is an autorelease object
+    // create the scene with physics enabled
     auto scene = Scene::createWithPhysics();
-    scene->getPhysicsWorld()->setGravity(Vec2(0, -900));
-    //scene->getPhysicsWorld()->setDebugDrawMask(0xffff);
     
-    // 'layer' is an autorelease object
-    auto layer = HelloWorld::create();
+    // set gravity
+    scene->getPhysicsWorld()->setGravity(Vec2(0, -900));
 
-    // add layer as a child to scene
+    // optional: set debug draw
+    // scene->getPhysicsWorld()->setDebugDrawMask(0xffff);
+    
+    auto layer = HelloWorld::create();
     scene->addChild(layer);
 
-    // return the scene
     return scene;
-}
-
-
-void HelloWorld::spawnSprite(const std::string &name, Vec2 pos)
-{
-    auto sprite = Sprite::create(name);
-    shapeCache->setBodyOnSprite(name, sprite);
-    sprite->setPosition(pos);
-    addChild(sprite);
 }
 
 
 bool HelloWorld::init()
 {
-    if (!Layer::init())
+    if ( !Layer::init() )
     {
         return false;
     }
-    auto pos = Vec2(Director::getInstance()->getWinSize()) / 2 +
-               Director::getInstance()->getVisibleOrigin();
+    
+    auto pos = Vec2(Director::getInstance()->getVisibleSize()) / 2 +
+    Director::getInstance()->getVisibleOrigin();
     
     // Load shapes
     shapeCache = PhysicsShapeCache::getInstance();
@@ -52,10 +45,11 @@ bool HelloWorld::init()
     spawnSprite("ground.png", pos);
     spawnSprite("banana.png", pos);
     
+    // Add touch listener
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchesBegan, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
+    
     return true;
 }
 
@@ -65,10 +59,25 @@ bool HelloWorld::onTouchesBegan(Touch *touch, Event *event)
     auto touchLoc = touch->getLocation();
     
     static int i = 0;
-    std::string sprites[] = { "banana.png", "cherries.png", "crate.png", "orange.png" };
+    static std::string sprites[] = { "banana.png", "cherries.png", "crate.png", "orange.png" };
     
     spawnSprite(sprites[i], touchLoc);
     i = (i + 1) % (sizeof(sprites)/sizeof(sprites[0]));
     
     return false;
 }
+
+
+void HelloWorld::spawnSprite(const std::string &name, Vec2 pos)
+{
+    // create a sprite with the given image name
+    auto sprite = Sprite::create(name);
+    
+    // attach physics body
+    shapeCache->setBodyOnSprite(name, sprite);
+
+    // set position and add it to the scene
+    sprite->setPosition(pos);
+    addChild(sprite);
+}
+

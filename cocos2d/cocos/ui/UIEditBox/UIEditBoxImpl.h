@@ -26,7 +26,7 @@
 #ifndef __UIEditBoxIMPL_H__
 #define __UIEditBoxIMPL_H__
 
-#include "UIEditBox.h"
+#include "ui/UIEditBox/UIEditBox.h"
 
 
 namespace cocos2d {
@@ -54,6 +54,7 @@ namespace cocos2d {
             virtual void setInputFlag(EditBox::InputFlag inputFlag) = 0;
             virtual void setMaxLength(int maxLength) = 0;
             virtual int  getMaxLength() = 0;
+            virtual void setTextHorizontalAlignment(cocos2d::TextHAlignment alignment) = 0;
             virtual void setReturnType(EditBox::KeyboardReturnType returnType) = 0;
             virtual bool isEditing() = 0;
             
@@ -78,7 +79,7 @@ namespace cocos2d {
              * @js NA
              * @lua NA
              */
-            virtual void visit(void) = 0;
+            virtual void draw(cocos2d::Renderer *renderer, cocos2d::Mat4 const &transform, uint32_t flags) = 0;
             /**
              * @js NA
              * @lua NA

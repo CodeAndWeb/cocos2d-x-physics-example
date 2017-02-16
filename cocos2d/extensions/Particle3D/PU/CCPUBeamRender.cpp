@@ -141,7 +141,7 @@ void PUBeamRender::particleEmitted( PUParticleSystem3D* particleSystem, PUPartic
     }
 }
 
-void PUBeamRender::particleExpired( PUParticleSystem3D* particleSystem, PUParticle3D* particle )
+void PUBeamRender::particleExpired( PUParticleSystem3D* /*particleSystem*/, PUParticle3D* particle )
 {
     if (particle->visualData)
     {
@@ -285,7 +285,7 @@ void PUBeamRender::unPrepare()
     destroyAll();
 }
 
-void PUBeamRender::updateRender( PUParticle3D *particle, float deltaTime, bool firstParticle )
+void PUBeamRender::updateRender( PUParticle3D *particle, float deltaTime, bool /*firstParticle*/ )
 {
     if (!particle->visualData)
         return;
@@ -357,10 +357,9 @@ PUBeamRender* PUBeamRender::clone()
     return br;
 }
 
-void PUBeamRender::copyAttributesTo( PURender *render )
+void PUBeamRender::copyAttributesTo(PUBeamRender *beamRender)
 {
-    PURender::copyAttributesTo(render);
-    PUBeamRender *beamRender = static_cast<PUBeamRender*>(render);
+    PURender::copyAttributesTo(beamRender);
     beamRender->setUseVertexColours(_useVertexColours);
     beamRender->setMaxChainElements(_maxChainElements);
     beamRender->setUpdateInterval(_updateInterval);

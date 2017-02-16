@@ -152,7 +152,7 @@ void ParticleSystem3D::removeAllAffector()
 
 Particle3DAffector* ParticleSystem3D::getAffector(int index)
 {
-    CCASSERT(index < _affectors.size(), "wrong index");
+    CCASSERT(index < (int)_affectors.size(), "wrong index");
     return _affectors[index];
 }
 
@@ -177,7 +177,7 @@ void ParticleSystem3D::update(float delta)
     }
 }
 
-void ParticleSystem3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+void ParticleSystem3D::draw(Renderer *renderer, const Mat4 &transform, uint32_t /*flags*/)
 {
     if (getAliveParticleCount() && _render)
     {

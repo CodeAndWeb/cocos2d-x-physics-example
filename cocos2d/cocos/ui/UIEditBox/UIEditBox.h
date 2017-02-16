@@ -43,8 +43,8 @@ namespace ui {
     class EditBoxImpl;
         
     /**
-     *@brief Editbox delgate class.
-     * It's useful when you want to do some customization duing Editbox input event
+     *@brief Editbox delegate class.
+     * It's useful when you want to do some customization during Editbox input event
      *
      * @js NA
      * @lua NA
@@ -52,6 +52,17 @@ namespace ui {
     class CC_GUI_DLL EditBoxDelegate
     {
     public:
+
+        /**
+         * Reason for ending edit (for platforms where it is known)
+         */
+        enum class EditBoxEndAction {
+            UNKNOWN,
+            TAB_TO_NEXT,
+            TAB_TO_PREVIOUS,
+            RETURN
+        };
+
         virtual ~EditBoxDelegate() {};
             
         /**
@@ -64,8 +75,9 @@ namespace ui {
         /**
          * This method is called when an edit box loses focus after keyboard is hidden.
          * @param editBox The edit box object that generated the event.
+         * @deprecated Use editBoxEditingDidEndWithAction() instead to receive reason for end
          */
-        virtual void editBoxEditingDidEnd(EditBox* editBox) {};
+        CC_DEPRECATED_ATTRIBUTE virtual void editBoxEditingDidEnd(EditBox* editBox) {};
             
         /**
          * This method is called when the edit box text was changed.
@@ -79,7 +91,13 @@ namespace ui {
          * @param editBox The edit box object that generated the event.
          */
         virtual void editBoxReturn(EditBox* editBox) = 0;
-            
+
+        /**
+         * This method is called when an edit box loses focus after keyboard is hidden.
+         * @param editBox The edit box object that generated the event.
+         * @param type The reason why editing ended.
+         */
+        virtual void editBoxEditingDidEndWithAction(EditBox* editBox, EditBoxEndAction action) {};
     };
         
     /**
@@ -104,7 +122,8 @@ namespace ui {
             DONE,
             SEND,
             SEARCH,
-            GO
+            GO,
+            NEXT
         };
             
         /**
@@ -184,7 +203,12 @@ namespace ui {
             /**
              * Capitalize all characters automatically.
              */
-            INTIAL_CAPS_ALL_CHARACTERS,
+            INITIAL_CAPS_ALL_CHARACTERS,
+            
+            /**
+             * Lowercase all characters automatically.
+             */
+            LOWERCASE_ALL_CHARACTERS
         };
             
         /**
@@ -308,14 +332,14 @@ namespace ui {
         const char* getText(void);
             
         /**
-         * Set the font.
+         * Set the font. Only system font is allowed.
          * @param pFontName The font name.
          * @param fontSize The font size.
          */
         void setFont(const char* pFontName, int fontSize);
             
         /**
-         * Set the font name.
+         * Set the font name. Only system font is allowed.
          * @param pFontName The font name.
          */
         void setFontName(const char* pFontName);
@@ -333,14 +357,14 @@ namespace ui {
         void setFontColor(const Color4B& color);
             
         /**
-         * Set the placeholder's font.
+         * Set the placeholder's font. Only system font is allowed.
          * @param pFontName The font name.
          * @param fontSize The font size.
          */
         void setPlaceholderFont(const char* pFontName, int fontSize);
             
         /**
-         * Set the placeholder's font name.
+         * Set the placeholder's font name. only system font is allowed.
          * @param pFontName The font name.
          */
         void setPlaceholderFontName(const char* pFontName);
@@ -407,7 +431,9 @@ namespace ui {
          * @param returnType One of the EditBox::KeyboardReturnType constants.
          */
         void setReturnType(EditBox::KeyboardReturnType returnType);
-            
+
+        void setTextHorizontalAlignment(cocos2d::TextHAlignment alignment);
+
         /* override functions */
         virtual void setPosition(const Vec2& pos) override;
         virtual void setVisible(bool visible) override;
@@ -423,7 +449,7 @@ namespace ui {
          * @js NA
          * @lua NA
          */
-        virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
+        virtual void draw(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
         /**
          * @js NA
          * @lua NA
@@ -455,7 +481,7 @@ namespace ui {
          */
         virtual void keyboardDidHide(IMEKeyboardNotificationInfo& info) override;
             
-        /* callback funtions
+        /* callback functions
          * @js NA
          * @lua NA
          */
@@ -471,7 +497,8 @@ namespace ui {
         InputMode    _editBoxInputMode;
         InputFlag    _editBoxInputFlag;
         EditBox::KeyboardReturnType  _keyboardReturnType;
-            
+        cocos2d::TextHAlignment _alignment;
+
         Scale9Sprite *_backgroundSprite;
         std::string _text;
         std::string _placeHolder;

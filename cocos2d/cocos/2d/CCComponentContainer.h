@@ -1,5 +1,5 @@
 /****************************************************************************
-Copyright (c) 2013-2015 Chukong Technologies Inc.
+Copyright (c) 2013-2016 Chukong Technologies Inc.
 
 http://www.cocos2d-x.org
 
@@ -41,31 +41,32 @@ protected:
     /**
      * @js ctor
      */
-    ComponentContainer(Node *pNode);
+    ComponentContainer(Node* node);
     
 public:
     /**
      * @js NA
      * @lua NA
      */
-    virtual ~ComponentContainer(void);
+    ~ComponentContainer();
+    
 	/**
      * @js getComponent
      */
-	virtual Component* get(const std::string& name) const;
-    virtual bool add(Component *com);
-    virtual bool remove(const std::string& name);
-    virtual bool remove(Component *com);
-    virtual void removeAll();
-    virtual void visit(float delta);
-public:
-    bool isEmpty() const;
+	Component* get(const std::string& name) const;
+
+    bool add(Component *com);
+    bool remove(const std::string& name);
+    bool remove(Component *com);
+    void removeAll();
+    void visit(float delta);
     
-private:
-    void alloc(void);
+    void onEnter();
+    void onExit();
     
+    bool isEmpty() const { return _componentMap.empty(); } 
 private:
-    Map<std::string, Component*>* _components;
+    std::unordered_map<std::string, Component*> _componentMap;
     Node *_owner;
     
     friend class Node;
@@ -74,4 +75,4 @@ private:
 NS_CC_END
 
 /// @endcond
-#endif  // __FUNDATION__CCCOMPONENT_H__
+#endif  // __CC_FRAMEWORK_COMCONTAINER_H__

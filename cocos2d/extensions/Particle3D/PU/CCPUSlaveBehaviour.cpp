@@ -39,7 +39,7 @@ PUSlaveBehaviour::~PUSlaveBehaviour()
 
 }
 
-void PUSlaveBehaviour::updateBehaviour( PUParticle3D *particle, float deltaTime )
+void PUSlaveBehaviour::updateBehaviour( PUParticle3D *particle, float /*deltaTime*/ )
 {
     if (masterParticle && !masterParticle->hasEventFlags(PUParticle3D::PEF_EXPIRED))
     {
@@ -57,7 +57,7 @@ PUSlaveBehaviour* PUSlaveBehaviour::clone()
 
 PUSlaveBehaviour* PUSlaveBehaviour::create()
 {
-    auto pb = new PUSlaveBehaviour();
+    auto pb = new (std::nothrow) PUSlaveBehaviour();
     pb->autorelease();
     return pb;
 }

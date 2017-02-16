@@ -2,16 +2,14 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
-#include "PhysicsShapeCache.h"
 
+#include "PhysicsShapeCache.h"
 
 class HelloWorld : public cocos2d::Layer
 {
 public:
-    // there's no 'id' in cpp, so we recommend returning the class instance pointer
     static cocos2d::Scene* createScene();
 
-    // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
     
     // a selector callback
@@ -21,7 +19,7 @@ public:
     CREATE_FUNC(HelloWorld);
     
 private:
-    void spawnSprite(const std::string &name, cocos2d::Vec2 pos);
+    void spawnSprite(const std::string &name, Vec2 pos);
     bool onTouchesBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 
     PhysicsShapeCache *shapeCache;

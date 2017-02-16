@@ -25,9 +25,10 @@
 #ifndef __CCBUNDLE3D_H__
 #define __CCBUNDLE3D_H__
 
+#include "base/CCData.h"
 #include "3d/CCBundle3DData.h"
 #include "3d/CCBundleReader.h"
-#include "json/document.h"
+#include "json/document-wrapper.h"
 
 NS_CC_BEGIN
 
@@ -37,7 +38,6 @@ NS_CC_BEGIN
  */
 
 class Animation3D;
-class Data;
 
 /**
  * @brief Defines a bundle file that contains a collection of assets. Mesh, Material, MeshSkin, Animation
@@ -85,6 +85,12 @@ public:
     //since 3.3, to support reskin
     virtual bool loadMaterials(MaterialDatas& materialdatas);
     
+    /**
+     * load triangle list
+     * @param path the file path to load
+     */
+    static std::vector<Vec3> getTrianglesList(const std::string& path);
+    
     //load .obj file
     static bool loadObj(MeshDatas& meshdatas, MaterialDatas& materialdatas, NodeDatas& nodedatas, const std::string& fullPath, const char* mtl_basepath = nullptr);
     
@@ -107,14 +113,14 @@ protected:
     bool loadMaterialsBinary(MaterialDatas& materialdatas);
     bool loadMaterialsBinary_0_1(MaterialDatas& materialdatas);
     bool loadMaterialsBinary_0_2(MaterialDatas& materialdatas);
-    bool loadMeshDataJson(MeshData* meshdata){return true;}
-    bool loadMeshDataJson_0_1(MeshData* meshdata){return true;}
-    bool loadMeshDataJson_0_2(MeshData* meshdata){return true;}
+    bool loadMeshDataJson(MeshData* meshdata);
+    bool loadMeshDataJson_0_1(MeshData* meshdata);
+    bool loadMeshDataJson_0_2(MeshData* meshdata);
     bool loadSkinDataJson(SkinData* skindata);
     bool loadSkinDataBinary(SkinData* skindata);
-    bool loadMaterialDataJson(MaterialData* materialdata){return true;}
-    bool loadMaterialDataJson_0_1(MaterialData* materialdata){return true;}
-    bool loadMaterialDataJson_0_2(MaterialData* materialdata){return true;}
+    bool loadMaterialDataJson(MaterialData* materialdata);
+    bool loadMaterialDataJson_0_1(MaterialData* materialdata);
+    bool loadMaterialDataJson_0_2(MaterialData* materialdata);
     bool loadAnimationDataJson(const std::string& id,Animation3DData* animationdata);
     bool loadAnimationDataBinary(const std::string& id,Animation3DData* animationdata);
 
@@ -171,11 +177,11 @@ protected:
     std::string _version;// the c3b or c3t version
     
     // for json reading
-    char* _jsonBuffer;
+    std::string _jsonBuffer;
     rapidjson::Document _jsonReader;
 
     // for binary reading
-    Data* _binaryBuffer;
+    Data _binaryBuffer;
     BundleReader _binaryReader;
     unsigned int _referenceCount;
     Reference* _references;

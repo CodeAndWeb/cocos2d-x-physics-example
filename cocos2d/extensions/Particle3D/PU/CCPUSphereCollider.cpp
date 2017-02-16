@@ -44,7 +44,7 @@ PUSphereCollider::~PUSphereCollider( void )
 }
 
 //-----------------------------------------------------------------------
-const float PUSphereCollider::getRadius(void) const
+float PUSphereCollider::getRadius() const
 {
     return _radius;
 }
@@ -104,7 +104,7 @@ void PUSphereCollider::calculateDirectionAfterCollision(PUParticle3D* particle, 
     }
 }
 
-void PUSphereCollider::updatePUAffector( PUParticle3D *particle, float deltaTime )
+void PUSphereCollider::updatePUAffector( PUParticle3D *particle, float /*deltaTime*/ )
 {
     //for (auto iter : _particleSystem->getParticles())
     {
@@ -185,7 +185,7 @@ void PUSphereCollider::updatePUAffector( PUParticle3D *particle, float deltaTime
     }
 }
 
-void PUSphereCollider::preUpdateAffector( float deltaTime )
+void PUSphereCollider::preUpdateAffector( float /*deltaTime*/ )
 {
     // Calculate the affectors' center position.
     _sphere.setCenter(getDerivedPosition());
