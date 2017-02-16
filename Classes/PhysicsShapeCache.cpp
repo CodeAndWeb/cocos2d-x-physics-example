@@ -144,7 +144,7 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleF
 }
 
 
-BodyDef *PhysicsShapeCache::getBodyDef(const std::string &name)
+PhysicsShapeCache::BodyDef *PhysicsShapeCache::getBodyDef(const std::string &name)
 {
     BodyDef *bd = bodyDefs.at(name);
     if (!bd)
@@ -182,7 +182,8 @@ PhysicsBody *PhysicsShapeCache::createBodyWithName(const std::string &name)
     BodyDef *bd = getBodyDef(name);
     if (!bd)
     {
-        return 0; // body not found
+        CCLOG("WARNING: PhysicsBody with name \"%s\", not found!", name.c_str());
+        return nullptr; // body not found
     }
     PhysicsBody *body = PhysicsBody::create();
     setBodyProperties(body, bd);
@@ -219,7 +220,7 @@ bool PhysicsShapeCache::setBodyOnSprite(const std::string &name, Sprite *sprite)
         // Cocos2d-x 3.7 required for custom anchor points:
         sprite->setAnchorPoint(getBodyDef(name)->anchorPoint);
     }
-    return body != 0;
+    return body != nullptr;
 }
 
 
