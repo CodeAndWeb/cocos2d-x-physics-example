@@ -1,6 +1,31 @@
 //
 //  PhysicsShapeCache.cpp
 //
+//  Shape cache for Cocos2d-x (v3.x) with built-in physics classes.
+//
+//  Loads physics sprites created with https://www.codeandweb.com/physicseditor
+//
+//  Copyright (c) 2015 CodeAndWeb GmbH. All rights reserved.
+//  https://www.codeandweb.com
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
 
 #include "PhysicsShapeCache.h"
 
@@ -38,7 +63,7 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleF
         // plist file not found
         return false;
     }
-
+    
     ValueMap &metadata = dict["metadata"].asValueMap();
     int format = metadata["format"].asInt();
     if (format != 1)
@@ -62,7 +87,7 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleF
         bodyDef->angularDamping       = bodyData.at("angular_damping").asFloat();
         bodyDef->velocityLimit        = bodyData.at("velocity_limit").asFloat();
         bodyDef->angularVelocityLimit = bodyData.at("angular_velocity_limit").asFloat();
-
+        
         const ValueVector &fixtureList = bodyData.at("fixtures").asValueVector();
         for (auto &fixtureitem : fixtureList)
         {
@@ -112,7 +137,7 @@ bool PhysicsShapeCache::addShapesWithFile(const std::string &plist, float scaleF
                 // unknown type
                 return false;
             }
-
+            
         }
     }
     return true;
@@ -225,7 +250,7 @@ bool PhysicsShapeCache::removeShapesWithFile(const std::string &plist)
             safeDeleteBodyDef(bd);
             bodyDefs.erase(bodyName);
         }
-       
+        
     }
     return true;
 }
