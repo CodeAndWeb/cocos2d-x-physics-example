@@ -58,11 +58,11 @@
                 <key>linear_damping</key>
                 <real>0</real>
                 <key>velocity_limit</key>
-                <real>1000000</real>
+                <real>1e+6</real>
                 <key>angular_damping</key>
                 <real>0</real>
                 <key>angular_velocity_limit</key>
-                <real>1000000</real>
+                <real>1e+6</real>
                 <key>fixtures</key>
                 <array>
 
@@ -70,7 +70,7 @@
                         <key>density</key>
                         <real>1</real>
                         <key>restitution</key>
-                        <real>0.2</real>
+                        <real>1</real>
                         <key>friction</key>
                         <real>0.7</real>
                         <key>tag</key>
@@ -141,19 +141,19 @@
                 <key>linear_damping</key>
                 <real>0</real>
                 <key>velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>angular_damping</key>
                 <real>0</real>
                 <key>angular_velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
                         <key>density</key>
-                        <real>1</real>
+                        <real>2</real>
                         <key>restitution</key>
-                        <real>0.2</real>
+                        <real>0.5</real>
                         <key>friction</key>
                         <real>0.7</real>
                         <key>tag</key>
@@ -181,11 +181,11 @@
 
                     <dict>
                         <key>density</key>
-                        <real>1</real>
+                        <real>2</real>
                         <key>restitution</key>
-                        <real>0.2</real>
+                        <real>0.5</real>
                         <key>friction</key>
-                        <real>0.7</real>
+                        <real>0.699999988079071</real>
                         <key>tag</key>
                         <integer>0</integer>
                         <key>group</key>
@@ -211,11 +211,11 @@
 
                     <dict>
                         <key>density</key>
-                        <real>1</real>
+                        <real>0.5</real>
                         <key>restitution</key>
                         <real>0.2</real>
                         <key>friction</key>
-                        <real>0.7</real>
+                        <real>0.699999988079071</real>
                         <key>tag</key>
                         <integer>0</integer>
                         <key>group</key>
@@ -283,17 +283,17 @@
                 <key>linear_damping</key>
                 <real>0</real>
                 <key>velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>angular_damping</key>
                 <real>0</real>
                 <key>angular_velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>fixtures</key>
                 <array>
 
                     <dict>
                         <key>density</key>
-                        <real>5</real>
+                        <real>15</real>
                         <key>restitution</key>
                         <real>0.2</real>
                         <key>friction</key>
@@ -339,11 +339,11 @@
                 <key>linear_damping</key>
                 <real>0</real>
                 <key>velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>angular_damping</key>
                 <real>0</real>
                 <key>angular_velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>fixtures</key>
                 <array>
 
@@ -573,11 +573,11 @@
                 <key>linear_damping</key>
                 <real>0</real>
                 <key>velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>angular_damping</key>
-                <real>0</real>
+                <real>0.1</real>
                 <key>angular_velocity_limit</key>
-                <real>1e+06</real>
+                <real>1e+6</real>
                 <key>fixtures</key>
                 <array>
 
@@ -585,9 +585,9 @@
                         <key>density</key>
                         <real>1</real>
                         <key>restitution</key>
-                        <real>0.2</real>
+                        <real>0.99</real>
                         <key>friction</key>
-                        <real>0.7</real>
+                        <real>0.1</real>
                         <key>tag</key>
                         <integer>0</integer>
                         <key>group</key>
