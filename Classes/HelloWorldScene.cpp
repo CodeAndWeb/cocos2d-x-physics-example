@@ -42,8 +42,8 @@ bool HelloWorld::init()
     addChild(background);
 
     // Add ground sprite and drop a banana
-    spawnSprite("ground.png", pos);
-    spawnSprite("banana.png", pos);
+    spawnSprite("ground", pos);
+    spawnSprite("banana", pos);
     
     // Add touch listener
     auto listener = EventListenerTouchOneByOne::create();
@@ -59,7 +59,7 @@ bool HelloWorld::onTouchesBegan(Touch *touch, Event *event)
     auto touchLoc = touch->getLocation();
     
     static int i = 0;
-    static std::string sprites[] = { "banana.png", "cherries.png", "crate.png", "orange.png" };
+    static std::string sprites[] = { "banana", "cherries", "crate", "orange" };
     
     spawnSprite(sprites[i], touchLoc);
     i = (i + 1) % (sizeof(sprites)/sizeof(sprites[0]));
@@ -71,7 +71,7 @@ bool HelloWorld::onTouchesBegan(Touch *touch, Event *event)
 void HelloWorld::spawnSprite(const std::string &name, Vec2 pos)
 {
     // create a sprite with the given image name
-    auto sprite = Sprite::create(name);
+    auto sprite = Sprite::create(name+".png");
     
     // attach physics body
     shapeCache->setBodyOnSprite(name, sprite);
