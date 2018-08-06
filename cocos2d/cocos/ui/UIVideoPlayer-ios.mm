@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -263,12 +264,12 @@ using namespace cocos2d::experimental::ui;
 //------------------------------------------------------------------------------------------------------------
 
 VideoPlayer::VideoPlayer()
-: _videoPlayerIndex(-1)
-, _eventCallback(nullptr)
-, _fullScreenEnabled(false)
+: _isPlaying(false)
 , _fullScreenDirty(false)
+, _fullScreenEnabled(false)
 , _keepAspectRatioEnabled(false)
-, _isPlaying(false)
+, _videoPlayerIndex(-1)
+, _eventCallback(nullptr)
 {
     _videoView = [[UIVideoViewWrapperIos alloc] init:this];
 

@@ -4,6 +4,7 @@ Copyright (c) 2009-2010 Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -517,6 +518,8 @@ void TMXMapInfo::startElement(void* /*ctx*/, const char *name, const char **atts
         s = CC_SIZE_PIXELS_TO_POINTS(s);
         dict["width"] = Value(s.width);
         dict["height"] = Value(s.height);
+
+        dict["rotation"] = attributeDict["rotation"].asDouble();
 
         // Add the object to the objectGroup
         objectGroup->getObjects().push_back(Value(dict));

@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -1947,10 +1948,9 @@ void DataReaderHelper::decodeNode(BaseData *node, const rapidjson::Value& json, 
     {
         stExpCocoNode* children = cocoNode->GetChildArray(cocoLoader);
         stExpCocoNode* child = &children[1];
-        const char *str = nullptr;
 
         std::string key = child->GetName(cocoLoader);
-        str = child->GetValue(cocoLoader);
+        const char *str = child->GetValue(cocoLoader);
         DisplayData *displayData = nullptr;
         if (key.compare(A_DISPLAY_TYPE) == 0)
         {

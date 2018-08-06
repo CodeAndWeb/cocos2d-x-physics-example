@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -113,7 +114,10 @@ protected:
     /**
      * calculate a model matrix which keep original translate & scaling but always face to the camera
      */
-    bool calculateBillbaordTransform();
+    bool calculateBillboardTransform();
+
+    /** @deprecated Use calculateBillboardTransform instead. */
+    CC_DEPRECATED_ATTRIBUTE bool calculateBillbaordTransform();
     
     Mat4 _camWorldMat;
     Mat4 _mvTransform;

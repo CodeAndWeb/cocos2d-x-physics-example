@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2013 cocos2d-x.org
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -964,12 +965,10 @@ ActionTimeline* ActionTimelineCache::createActionWithFlatBuffersForSimulator(con
     fbs->_isSimulator = true;
     auto builder = fbs->createFlatBuffersWithXMLFileForSimulator(fileName);
     
-    ActionTimeline* action = ActionTimeline::create();
-    
     auto csparsebinary = GetCSParseBinary(builder->GetBufferPointer());
     auto nodeAction = csparsebinary->action();
     
-    action = ActionTimeline::create();
+    auto action = ActionTimeline::create();
     
     int duration = nodeAction->duration();
     action->setDuration(duration);

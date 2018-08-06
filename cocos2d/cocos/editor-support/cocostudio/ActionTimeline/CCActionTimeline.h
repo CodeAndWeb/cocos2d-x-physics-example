@@ -1,5 +1,6 @@
 ﻿/****************************************************************************
 Copyright (c) 2013 cocos2d-x.org
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -202,7 +203,7 @@ public:
     /// @name implement Playable Protocol
     virtual void start() override;
     virtual void stop() override;
-    /// @} end of PlaybleProtocol
+    /// @} end of PlayableProtocol
 
 protected:
     virtual void gotoFrame(int frameIndex);

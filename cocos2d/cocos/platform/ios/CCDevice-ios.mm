@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -27,13 +28,14 @@
 #include "platform/CCPlatformConfig.h"
 #if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
 
+#import <UIKit/UIKit.h>
+
 #include "platform/CCDevice.h"
 #include "base/ccTypes.h"
-#include "platform/apple/CCDevice-apple.h"
 #include "base/CCEventDispatcher.h"
 #include "base/CCEventAcceleration.h"
 #include "base/CCDirector.h"
-#import <UIKit/UIKit.h>
+#include "platform/apple/CCDevice-apple.h"
 
 // Accelerometer
 #if !defined(CC_TARGET_OS_TVOS)
@@ -43,6 +45,9 @@
 #import <CoreText/CoreText.h>
 // Vibrate
 #import <AudioToolbox/AudioToolbox.h>
+
+const float MAX_MEASURE_HEIGHT = 10000;
+
 
 static NSAttributedString* __attributedStringWithFontSize(NSMutableAttributedString* attributedString, CGFloat fontSize)
 {
@@ -82,7 +87,11 @@ static CGFloat _calculateTextDrawStartHeight(cocos2d::Device::TextAlign align, C
     return startH;
 }
 
-static CGSize _calculateShrinkedSizeForString(NSAttributedString **str, id font, CGSize constrainSize, bool enableWrap, int& newFontSize)
+static CGSize _calculateShrinkedSizeForString(NSAttributedString **str,
+                                              id font,
+                                              CGSize constrainSize,
+                                              bool enableWrap,
+                                              int& newFontSize)
 {
     CGRect actualSize = CGRectMake(0, 0, constrainSize.width + 1, constrainSize.height + 1);
     int fontSize = [font pointSize];
@@ -102,7 +111,7 @@ static CGSize _calculateShrinkedSizeForString(NSAttributedString **str, id font,
             *str = __attributedStringWithFontSize(mutableString, fontSize);
 
             CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)*str);
-            CGSize targetSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
+            CGSize targetSize = CGSizeMake(MAX_MEASURE_HEIGHT, MAX_MEASURE_HEIGHT);
             CGSize fitSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [(*str) length]), NULL, targetSize, NULL);
             CFRelease(framesetter);
             if (fitSize.width == 0 || fitSize.height == 0) {
@@ -135,10 +144,10 @@ static CGSize _calculateShrinkedSizeForString(NSAttributedString **str, id font,
             NSMutableAttributedString *mutableString = [[*str mutableCopy] autorelease];
             *str = __attributedStringWithFontSize(mutableString, fontSize);
             
-            CTFramesetterRef framesetter = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)*str);
-            CGSize targetSize = CGSizeMake(constrainSize.width, CGFLOAT_MAX);
-            CGSize fitSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, [(*str) length]), NULL, targetSize, NULL);
-            CFRelease(framesetter);
+            CGSize fitSize = [*str boundingRectWithSize:CGSizeMake(constrainSize.width, MAX_MEASURE_HEIGHT)
+                                    options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
+                                    context:nil].size;
+
             if (fitSize.width == 0 || fitSize.height == 0) {
                 continue;
             }
@@ -160,7 +169,7 @@ static CGSize _calculateShrinkedSizeForString(NSAttributedString **str, id font,
 
     newFontSize = fontSize;
 
-    return CGSizeMake(actualSize.size.width, actualSize.size.height);
+    return CGSizeMake(ceilf(actualSize.size.width), ceilf(actualSize.size.height));
 }
 
 #define SENSOR_DELAY_GAME 0.02
@@ -339,16 +348,16 @@ static CGSize _calculateStringSize(NSAttributedString *str, id font, CGSize *con
 {
     CGSize textRect = CGSizeZero;
     textRect.width = constrainSize->width > 0 ? constrainSize->width
-    : CGFLOAT_MAX;
+    : MAX_MEASURE_HEIGHT;
     textRect.height = constrainSize->height > 0 ? constrainSize->height
-    : CGFLOAT_MAX;
+    : MAX_MEASURE_HEIGHT;
     
     if (overflow == 1) {
         if(!enableWrap) {
-            textRect.width = CGFLOAT_MAX;
-            textRect.height = CGFLOAT_MAX;
+            textRect.width = MAX_MEASURE_HEIGHT;
+            textRect.height = MAX_MEASURE_HEIGHT;
         } else {
-            textRect.height = CGFLOAT_MAX;
+            textRect.height = MAX_MEASURE_HEIGHT;
         }
     }
 

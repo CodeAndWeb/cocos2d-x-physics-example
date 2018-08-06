@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -78,7 +79,7 @@ static void accelerometer_sensor_cb(sensor_h _sensor, sensor_event_s *sensor_dat
     _acceleration->x = sensor_data->values[0] / GRAVITY_EARTH;
     _acceleration->y = sensor_data->values[1] / GRAVITY_EARTH;
     _acceleration->z = sensor_data->values[2] / GRAVITY_EARTH;
-    _acceleration->timestamp = sensor_data->timestamp;
+    _acceleration->timestamp = (double)sensor_data->timestamp / 1e6;
 
     double tmp = _acceleration->x;
     Application *app = Application::getInstance();

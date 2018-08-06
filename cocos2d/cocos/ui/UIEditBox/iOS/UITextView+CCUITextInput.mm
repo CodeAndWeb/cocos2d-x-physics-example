@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2015 Mazyad Alabduljaleel
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -46,15 +47,6 @@
     return nil;
 }
 
-- (UILabel *)ccui_placeholderLabel
-{
-    SEL selector = @selector(placeHolderLabel);
-    if ([self respondsToSelector:selector]) {
-        return [self performSelector:selector];
-    }
-    return nil;
-}
-
 - (void)ccui_setPlaceholder:(NSString *)ccui_placeholder
 {
     SEL selector = @selector(setPlaceholder:);
@@ -85,12 +77,46 @@
 
 - (NSTextAlignment)ccui_alignment
 {
-  return self.textAlignment;
+    return self.textAlignment;
 }
 
 - (void)ccui_setTextHorizontalAlignment:(NSTextAlignment)ccui_alignment
 {
-  self.textAlignment = ccui_alignment;
+    self.textAlignment = ccui_alignment;
+}
+
+- (UIColor *)ccui_placeholderTextColor
+{
+    SEL selector = NSSelectorFromString(@"placeHolderLabel");
+    if ([self respondsToSelector:selector]) {
+        return ((UILabel *)[self performSelector:selector]).textColor;
+    }
+    return nil;
+}
+
+- (void)ccui_setPlaceholderTextColor:(UIColor *)ccui_placeholderTextColor
+{
+    SEL selector = NSSelectorFromString(@"placeHolderLabel");
+    if ([self respondsToSelector:selector]) {
+        ((UILabel *)[self performSelector:selector]).textColor = ccui_placeholderTextColor;
+    }
+}
+
+- (UIFont *)ccui_placeholderFont
+{
+    SEL selector = NSSelectorFromString(@"placeHolderLabel");
+    if ([self respondsToSelector:selector]) {
+        return ((UILabel *)[self performSelector:selector]).font;
+    }
+    return nil;
+}
+
+- (void)ccui_setPlaceholderFont:(UIFont *)ccui_placeholderFont
+{
+    SEL selector = NSSelectorFromString(@"placeHolderLabel");
+    if ([self respondsToSelector:selector]) {
+        ((UILabel *)[self performSelector:selector]).font = ccui_placeholderFont;
+    }
 }
 
 - (BOOL)ccui_secureTextEntry

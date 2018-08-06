@@ -3,6 +3,7 @@ Copyright (c) 2011      Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -74,6 +75,7 @@ enum {
 
     kShaderType_ETC1ASPositionTextureGray,
     kShaderType_ETC1ASPositionTextureGray_noMVP,
+    kShaderType_LayerRadialGradient,
     kShaderType_MAX,
 };
 
@@ -300,6 +302,10 @@ void GLProgramCache::loadDefaultGLPrograms()
     p = new(std::nothrow) GLProgram();
     loadDefaultGLProgram(p, kShaderType_ETC1ASPositionTextureGray_noMVP);
     _programs.emplace(GLProgram::SHADER_NAME_ETC1AS_POSITION_TEXTURE_GRAY_NO_MVP, p);
+    
+    p = new(std::nothrow) GLProgram();
+    loadDefaultGLProgram(p, kShaderType_LayerRadialGradient);
+    _programs.emplace(GLProgram::SHADER_LAYER_RADIAL_GRADIENT, p);
 }
 
 void GLProgramCache::reloadDefaultGLPrograms()
@@ -449,6 +455,28 @@ void GLProgramCache::reloadDefaultGLPrograms()
     p = getGLProgram(GLProgram::SHADER_CAMERA_CLEAR);
     p->reset();
     loadDefaultGLProgram(p, kShaderType_CameraClear);
+
+    // ETC1 ALPHA supports.
+    p = getGLProgram(GLProgram::SHADER_NAME_ETC1AS_POSITION_TEXTURE_COLOR);
+    p->reset();
+    loadDefaultGLProgram(p, kShaderType_ETC1ASPositionTextureColor);
+
+    p = getGLProgram(GLProgram::SHADER_NAME_ETC1AS_POSITION_TEXTURE_COLOR_NO_MVP);
+    p->reset();
+    loadDefaultGLProgram(p, kShaderType_ETC1ASPositionTextureColor_noMVP);
+
+    // ETC1 Gray supports.
+    p = getGLProgram(GLProgram::SHADER_NAME_ETC1AS_POSITION_TEXTURE_GRAY);
+    p->reset();
+    loadDefaultGLProgram(p, kShaderType_ETC1ASPositionTextureGray);
+
+    p = getGLProgram(GLProgram::SHADER_NAME_ETC1AS_POSITION_TEXTURE_GRAY_NO_MVP);
+    p->reset();
+    loadDefaultGLProgram(p, kShaderType_ETC1ASPositionTextureGray_noMVP);
+    
+    p = getGLProgram(GLProgram::SHADER_LAYER_RADIAL_GRADIENT);
+    loadDefaultGLProgram(p, kShaderType_LayerRadialGradient);
+    _programs.emplace(GLProgram::SHADER_LAYER_RADIAL_GRADIENT, p);
 }
 
 void GLProgramCache::reloadDefaultGLProgramsRelativeToLights()
@@ -601,6 +629,9 @@ void GLProgramCache::loadDefaultGLProgram(GLProgram *p, int type)
             break;
         case kShaderType_ETC1ASPositionTextureGray_noMVP:
             p->initWithByteArrays(ccPositionTextureColor_noMVP_vert, ccETC1ASPositionTextureGray_frag);
+            break;
+        case kShaderType_LayerRadialGradient:
+            p->initWithByteArrays(ccPosition_vert, ccShader_LayerRadialGradient_frag);
             break;
         default:
             CCLOG("cocos2d: %s:%d, error shader type", __FUNCTION__, __LINE__);

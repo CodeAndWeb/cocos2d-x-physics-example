@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -111,9 +112,9 @@ ssize_t RenderQueue::size() const
 void RenderQueue::sort()
 {
     // Don't sort _queue0, it already comes sorted
-    std::sort(std::begin(_commands[QUEUE_GROUP::TRANSPARENT_3D]), std::end(_commands[QUEUE_GROUP::TRANSPARENT_3D]), compare3DCommand);
-    std::sort(std::begin(_commands[QUEUE_GROUP::GLOBALZ_NEG]), std::end(_commands[QUEUE_GROUP::GLOBALZ_NEG]), compareRenderCommand);
-    std::sort(std::begin(_commands[QUEUE_GROUP::GLOBALZ_POS]), std::end(_commands[QUEUE_GROUP::GLOBALZ_POS]), compareRenderCommand);
+    std::stable_sort(std::begin(_commands[QUEUE_GROUP::TRANSPARENT_3D]), std::end(_commands[QUEUE_GROUP::TRANSPARENT_3D]), compare3DCommand);
+    std::stable_sort(std::begin(_commands[QUEUE_GROUP::GLOBALZ_NEG]), std::end(_commands[QUEUE_GROUP::GLOBALZ_NEG]), compareRenderCommand);
+    std::stable_sort(std::begin(_commands[QUEUE_GROUP::GLOBALZ_POS]), std::end(_commands[QUEUE_GROUP::GLOBALZ_POS]), compareRenderCommand);
 }
 
 RenderCommand* RenderQueue::operator[](ssize_t index) const
@@ -281,7 +282,14 @@ void Renderer::setupVBOAndVAO()
     glGenBuffers(2, &_buffersVBO[0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, _buffersVBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
+    // Issue #15652
+    // Should not initialize VBO with a large size (VBO_SIZE=65536),
+    // it may cause low FPS on some Android devices like LG G4 & Nexus 5X.
+    // It's probably because some implementations of OpenGLES driver will
+    // copy the whole memory of VBO which initialized at the first time
+    // once glBufferData/glBufferSubData is invoked.
+    // For more discussion, please refer to https://github.com/cocos2d/cocos2d-x/issues/15652
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(_verts[0]) * VBO_SIZE, _verts, GL_DYNAMIC_DRAW);
 
     // vertices
     glEnableVertexAttribArray(GLProgram::VERTEX_ATTRIB_POSITION);
@@ -310,10 +318,10 @@ void Renderer::setupVBO()
 {
     glGenBuffers(2, &_buffersVBO[0]);
     // Issue #15652
-    // Should not initialzie VBO with a large size (VBO_SIZE=65536),
+    // Should not initialize VBO with a large size (VBO_SIZE=65536),
     // it may cause low FPS on some Android devices like LG G4 & Nexus 5X.
     // It's probably because some implementations of OpenGLES driver will
-    // copy the whole memory of VBO which initialzied at the first time
+    // copy the whole memory of VBO which initialized at the first time
     // once glBufferData/glBufferSubData is invoked.
     // For more discussion, please refer to https://github.com/cocos2d/cocos2d-x/issues/15652
 //    mapBuffers();
@@ -340,17 +348,17 @@ void Renderer::mapBuffers()
 
 void Renderer::addCommand(RenderCommand* command)
 {
-    int renderQueue =_commandGroupStack.top();
-    addCommand(command, renderQueue);
+    int renderQueueID =_commandGroupStack.top();
+    addCommand(command, renderQueueID);
 }
 
-void Renderer::addCommand(RenderCommand* command, int renderQueue)
+void Renderer::addCommand(RenderCommand* command, int renderQueueID)
 {
     CCASSERT(!_isRendering, "Cannot add command while rendering");
-    CCASSERT(renderQueue >=0, "Invalid render queue");
+    CCASSERT(renderQueueID >=0, "Invalid render queue");
     CCASSERT(command->getType() != RenderCommand::Type::UNKNOWN_COMMAND, "Invalid Command Type");
 
-    _renderGroups[renderQueue].push_back(command);
+    _renderGroups[renderQueueID].push_back(command);
 }
 
 void Renderer::pushGroup(int renderQueueID)
@@ -750,7 +758,7 @@ void Renderer::drawBatchedTriangles()
         // in the same batch ?
         if (batchable && (prevMaterialID == currentMaterialID || firstCommand))
         {
-            CC_ASSERT(firstCommand || _triBatchesToDraw[batchesTotal].cmd->getMaterialID() == cmd->getMaterialID() && "argh... error in logic");
+            CC_ASSERT((firstCommand || _triBatchesToDraw[batchesTotal].cmd->getMaterialID() == cmd->getMaterialID()) && "argh... error in logic");
             _triBatchesToDraw[batchesTotal].indicesToDraw += cmd->getIndexCount();
             _triBatchesToDraw[batchesTotal].cmd = cmd;
         }
@@ -844,7 +852,7 @@ void Renderer::drawBatchedTriangles()
     }
 
     /************** 4: Cleanup *************/
-    if (Configuration::getInstance()->supportsShareableVAO())
+    if (conf->supportsShareableVAO() && conf->supportsMapBuffer())
     {
         //Unbind VAO
         GL::bindVAO(0);
@@ -890,15 +898,15 @@ void Renderer::flushTriangles()
 // helpers
 bool Renderer::checkVisibility(const Mat4 &transform, const Size &size)
 {
-    auto scene = Director::getInstance()->getRunningScene();
+    auto director = Director::getInstance();
+    auto scene = director->getRunningScene();
     
     //If draw to Rendertexture, return true directly.
     // only cull the default camera. The culling algorithm is valid for default camera.
     if (!scene || (scene && scene->_defaultCamera != Camera::getVisitingCamera()))
         return true;
 
-    auto director = Director::getInstance();
-    Rect visiableRect(director->getVisibleOrigin(), director->getVisibleSize());
+    Rect visibleRect(director->getVisibleOrigin(), director->getVisibleSize());
     
     // transform center point to screen space
     float hSizeX = size.width/2;
@@ -912,11 +920,11 @@ bool Renderer::checkVisibility(const Mat4 &transform, const Size &size)
     float wshh = std::max(fabsf(hSizeX * transform.m[1] + hSizeY * transform.m[5]), fabsf(hSizeX * transform.m[1] - hSizeY * transform.m[5]));
     
     // enlarge visible rect half size in screen coord
-    visiableRect.origin.x -= wshw;
-    visiableRect.origin.y -= wshh;
-    visiableRect.size.width += wshw * 2;
-    visiableRect.size.height += wshh * 2;
-    bool ret = visiableRect.containsPoint(v2p);
+    visibleRect.origin.x -= wshw;
+    visibleRect.origin.y -= wshh;
+    visibleRect.size.width += wshw * 2;
+    visibleRect.size.height += wshh * 2;
+    bool ret = visibleRect.containsPoint(v2p);
     return ret;
 }
 

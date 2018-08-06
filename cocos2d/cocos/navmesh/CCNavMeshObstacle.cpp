@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2015 Chukong Technologies Inc.
+ Copyright (c) 2015-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -53,9 +54,9 @@ const std::string& NavMeshObstacle::getNavMeshObstacleComponentName()
 NavMeshObstacle::NavMeshObstacle()
 : _radius(0.0f)
 , _height(0.0f)
-, _tileCache(nullptr)
-, _obstacleID(-1)
 , _syncFlag(NODE_AND_NODE)
+, _obstacleID(-1)
+, _tileCache(nullptr)
 {
 
 }

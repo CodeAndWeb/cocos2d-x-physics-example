@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -73,7 +74,7 @@ AbstractCheckButton::~AbstractCheckButton()
 }
 
 bool AbstractCheckButton::init(const std::string& backGround,
-                    const std::string& backGroundSeleted,
+                    const std::string& backGroundSelected,
                     const std::string& cross,
                     const std::string& backGroundDisabled,
                     const std::string& frontCrossDisabled,
@@ -89,7 +90,7 @@ bool AbstractCheckButton::init(const std::string& backGround,
         }
         
         setSelected(false);
-        loadTextures(backGround, backGroundSeleted, cross, backGroundDisabled, frontCrossDisabled,texType);
+        loadTextures(backGround, backGroundSelected, cross, backGroundDisabled, frontCrossDisabled, texType);
     } while (0);
     return ret;
 }

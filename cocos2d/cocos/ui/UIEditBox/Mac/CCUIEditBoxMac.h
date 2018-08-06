@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2013-2016 zilongshanren
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -44,7 +45,6 @@
 
 @property (nonatomic, readonly, getter = isEditState) BOOL editState;
 @property (nonatomic, assign) void *editBox;
-@property (nonatomic, assign) NSString *text;
 @property (nonatomic, assign) NSRect frameRect;
 @property (nonatomic, assign) cocos2d::ui::EditBox::InputFlag dataInputMode;
 @property (nonatomic, assign) cocos2d::ui::EditBox::KeyboardReturnType keyboardReturnType;
@@ -62,11 +62,14 @@
 - (void)setInputMode:(cocos2d::ui::EditBox::InputMode)inputMode;
 - (void)setInputFlag:(cocos2d::ui::EditBox::InputFlag)inputFlag;
 - (void)setReturnType:(cocos2d::ui::EditBox::KeyboardReturnType)returnType;
-
+- (void)setTextHorizontalAlignment:(cocos2d::TextHAlignment)alignment;
 - (void)setPlaceHolder:(const char *)text;
 - (void)setVisible:(BOOL)visible;
 - (void)setTextColor:(NSColor*)color;
 - (void)setFont:(NSFont *)font;
 - (void)setPlaceholderFontColor:(NSColor*)color;
 - (void)setPlaceholderFont:(NSFont*)font;
+- (void)setText:(NSString *)text;
+- (const char*) getText;
+
 @end

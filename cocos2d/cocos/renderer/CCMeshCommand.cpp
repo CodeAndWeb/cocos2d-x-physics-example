@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -45,15 +46,15 @@ NS_CC_BEGIN
 
 
 MeshCommand::MeshCommand()
-: _textureID(0)
-, _glProgramState(nullptr)
-, _displayColor(1.0f, 1.0f, 1.0f, 1.0f)
+: _displayColor(1.0f, 1.0f, 1.0f, 1.0f)
 , _matrixPalette(nullptr)
 , _matrixPaletteSize(0)
 , _materialID(0)
 , _vao(0)
 , _material(nullptr)
+, _glProgramState(nullptr)
 , _stateBlock(nullptr)
+, _textureID(0)
 {
     _type = RenderCommand::Type::MESH_COMMAND;
 

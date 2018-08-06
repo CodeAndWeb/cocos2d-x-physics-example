@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -61,6 +62,8 @@ public:
     virtual void setVolume(float volume) override;
 
     virtual float getVolume() const override;
+
+    virtual void setAudioFocus(bool isFocus) override;
 
     virtual void setLoop(bool isLoop) override;
 

@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -143,7 +144,7 @@ namespace ui {
         /**
          * Creates a 9-slice sprite with an sprite frame.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @see initWithSpriteFrame(SpriteFrame *spriteFrame)
@@ -155,7 +156,7 @@ namespace ui {
         /**
          * Creates a 9-slice sprite with an sprite frame and the centre of its zone.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @see initWithSpriteFrame(SpriteFrame *spriteFrame, const Rect& capInsets)
@@ -168,7 +169,7 @@ namespace ui {
         /**
          * Creates a 9-slice sprite with an sprite frame name.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @see initWithSpriteFrameName(const char *spriteFrameName)
@@ -180,7 +181,7 @@ namespace ui {
         /**
          * Creates a 9-slice sprite with an sprite frame name and the centre of its zone.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @see initWithSpriteFrameName(const char *spriteFrameName, const Rect& capInsets)
@@ -190,7 +191,7 @@ namespace ui {
          */
         static Scale9Sprite* createWithSpriteFrameName(const std::string& spriteFrameName, const Rect& capInsets);
 
-        // overriden methods that takes different parameters
+        // overridden methods that takes different parameters
         using Sprite::initWithFile;
         using Sprite::initWithSpriteFrame;
         using Sprite::initWithSpriteFrameName;
@@ -200,7 +201,7 @@ namespace ui {
          * Initializes a 9-slice sprite with a texture file, a delimitation zone and
          * with the specified cap insets.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param file The name of the texture file.
@@ -216,7 +217,7 @@ namespace ui {
          * Initializes a 9-slice sprite with a texture file and with the specified cap
          * insets.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param file The name of the texture file.
@@ -229,7 +230,7 @@ namespace ui {
          * Initializes a 9-slice sprite with an sprite frame and with the specified
          * cap insets.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param spriteFrame The sprite frame object.
@@ -242,7 +243,7 @@ namespace ui {
          * Initializes a 9-slice sprite with an sprite frame name and with the specified
          * cap insets.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param spriteFrameName The sprite frame name.
@@ -257,7 +258,7 @@ namespace ui {
          * Initializes a 9-slice sprite with a texture file and a delimitation zone. The
          * texture will be broken down into a 3×3 grid of equal blocks.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param file The name of the texture file.
@@ -272,7 +273,7 @@ namespace ui {
          * Initializes a 9-slice sprite with a texture file. The whole texture will be
          * broken down into a 3×3 grid of equal blocks.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param file The name of the texture file.
@@ -283,7 +284,7 @@ namespace ui {
         /**
          * Initializes a 9-slice sprite with an sprite frame name.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param spriteFrameName The sprite frame name.
@@ -296,7 +297,7 @@ namespace ui {
         /**
          * @brief Initializes a 9-slice sprite with an sprite instance.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param sprite The sprite instance.
@@ -310,7 +311,7 @@ namespace ui {
         /**
          * @brief Initializes a 9-slice sprite with an sprite instance.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param sprite The sprite instance.
@@ -323,7 +324,7 @@ namespace ui {
         /**
          * @brief Initializes a 9-slice sprite with an sprite instance.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @param sprite The sprite instance.
@@ -344,7 +345,7 @@ namespace ui {
         /**
          * @brief Initializes a 9-slice sprite with a sprite batchnode.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @deprecated Use @see `init` instead.
@@ -361,7 +362,7 @@ namespace ui {
         /**
          * @brief Initializes a 9-slice sprite with a sprite batch node.
          * Once the sprite is created, you can then call its "setContentSize:" method
-         * to resize the sprite will all it's 9-slice goodness intract.
+         * to resize the sprite will all it's 9-slice goodness interact.
          * It respects the anchorPoint too.
          *
          * @deprecated Use @see `init` instead.

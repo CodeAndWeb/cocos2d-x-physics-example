@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2013      Zynga Inc.
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -40,7 +41,7 @@ public:
     static FontCharMap * create(Texture2D* texture, int itemWidth, int itemHeight, int startCharMap);
     static FontCharMap * create(const std::string& plistFile);
     
-    virtual int* getHorizontalKerningForTextUTF16(const std::u16string& text, int &outNumLetters) const override;
+    virtual int* getHorizontalKerningForTextUTF32(const std::u32string& text, int &outNumLetters) const override;
     virtual FontAtlas *createFontAtlas() override;
     
 protected:    

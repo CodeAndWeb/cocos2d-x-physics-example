@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2010 cocos2d-x.org
  Copyright (c) Microsoft Open Technologies, Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
  
@@ -56,6 +57,22 @@ public:
     virtual long getFileSize(const std::string &filepath) override;
 	virtual FileUtils::Status getContents(const std::string& filename, ResizableBuffer* buffer) override;
 	static std::string getAppPath();
+
+    /**
+    *  List all files in a directory.
+    *
+    *  @param dirPath The path of the directory, it could be a relative or an absolute path.
+    *  @return File paths in a string vector
+    */
+    virtual std::vector<std::string> listFiles(const std::string& dirPath) const;
+
+    /**
+    *  List all files recursively in a directory.
+    *
+    *  @param dirPath The path of the directory, it could be a relative or an absolute path.
+    *  @return File paths in a string vector
+    */
+    virtual void listFilesRecursively(const std::string& dirPath, std::vector<std::string> *files) const;
 
 private:
     virtual bool isFileExistInternal(const std::string& strFilePath) const override;

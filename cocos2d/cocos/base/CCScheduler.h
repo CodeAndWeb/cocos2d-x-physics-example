@@ -3,6 +3,7 @@ Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -50,12 +51,10 @@ class CC_DLL Timer : public Ref
 protected:
     Timer();
 public:
-    /** get interval in seconds */
-    float getInterval() const { return _interval; }
-    /** set interval in seconds */
-    void setInterval(float interval) { _interval = interval; }
-    
     void setupTimerWithInterval(float seconds, unsigned int repeat, float delay);
+    void setAborted() { _aborted = true; }
+    bool isAborted() const { return _aborted; }
+    bool isExhausted() const;
     
     virtual void trigger(float dt) = 0;
     virtual void cancel() = 0;
@@ -64,7 +63,6 @@ public:
     void update(float dt);
     
 protected:
-    
     Scheduler* _scheduler; // weak ref
     float _elapsed;
     bool _runForever;
@@ -73,6 +71,7 @@ protected:
     unsigned int _repeat; //0 = once, 1 is 2 x executed
     float _delay;
     float _interval;
+    bool _aborted;
 };
 
 
@@ -311,7 +310,7 @@ public:
     void unschedule(const std::string& key, void *target);
 
     /** Unschedules a selector for a given target.
-     If you want to unschedule the "update", use `unscheudleUpdate()`.
+     If you want to unschedule the "update", use `unscheduleUpdate()`.
      @param selector The selector that is unscheduled.
      @param target The target of the unscheduled selector.
      @since v3.0
@@ -365,7 +364,7 @@ public:
      @return True if the specified callback is invoked, false if not.
      @since v3.0.0
      */
-    bool isScheduled(const std::string& key, void *target);
+    bool isScheduled(const std::string& key, const void *target) const;
     
     /** Checks whether a selector for a given target is scheduled.
      @param selector The selector to be checked.
@@ -373,7 +372,7 @@ public:
      @return True if the specified selector is invoked, false if not.
      @since v3.0
      */
-    bool isScheduled(SEL_SCHEDULE selector, Ref *target);
+    bool isScheduled(SEL_SCHEDULE selector, const Ref *target) const;
     
     /////////////////////////////////////
     
@@ -428,7 +427,16 @@ public:
      @since v3.0
      @js NA
      */
-    void performFunctionInCocosThread( const std::function<void()> &function);
+    void performFunctionInCocosThread(std::function<void()> function);
+    
+    /**
+     * Remove all pending functions queued to be performed with Scheduler::performFunctionInCocosThread
+     * Functions unscheduled in this manner will not be executed
+     * This function is thread safe
+     * @since v3.14
+     * @js NA
+     */
+    void removeAllFunctionsToBePerformedInCocosThread();
     
     /////////////////////////////////////
     
@@ -468,7 +476,7 @@ public:
     CC_DEPRECATED_ATTRIBUTE void scheduleUpdateForTarget(T* target, int priority, bool paused) { scheduleUpdate(target, priority, paused); };
     
     /** Unschedule a selector for a given target.
-     If you want to unschedule the "update", use unscheudleUpdateForTarget.
+     If you want to unschedule the "update", use unscheduleUpdateForTarget.
      @deprecated Please use 'Scheduler::unschedule' instead.
      @since v0.99.3
      @js NA
@@ -517,6 +525,7 @@ protected:
     struct _listEntry *_updates0List;            // list priority == 0
     struct _listEntry *_updatesPosList;        // list priority > 0
     struct _hashUpdateEntry *_hashForUpdates; // hash used to fetch quickly the list entries for pause,delete,etc
+    std::vector<struct _listEntry *> _updateDeleteVector; // the vector holds list entries that needs to be deleted after update
 
     // Used for "selectors with interval"
     struct _hashSelectorEntry *_hashForTimers;

@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -62,6 +63,8 @@ public:
     void setVolume(float volume);
     float getVolume() const;
 
+    void setAudioFocus(bool isFocus);
+
     bool setPosition(float pos);
     float getPosition() const;
 
@@ -96,6 +99,7 @@ private:
     std::mutex _volumeDirtyMutex;
     bool _isLoop;
     bool _isInitialized;
+    bool _isAudioFocus;
 
     friend class AudioMixerController;
 };

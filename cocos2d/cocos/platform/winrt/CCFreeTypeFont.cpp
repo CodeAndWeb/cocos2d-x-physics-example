@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2013      cocos2d-x.org   http://cocos2d-x.org
  Copyright (c) Microsoft Open Technologies, Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -460,12 +461,11 @@ FT_Error CCFreeTypeFont::initWordGlyphs(std::vector<TGlyph>& glyphs, const std::
 	FT_UInt			previous = 0;
 	FT_Error		error = 0;
 	PGlyph			glyph;
-    unsigned int    numGlyphs = 0;
-    wchar_t *       pwszBuffer = nullptr;
+	unsigned int    numGlyphs = 0;
 
 	int num_chars = static_cast<int>(text.size());
 	int nBufLen  = num_chars + 1;
-	pwszBuffer = new wchar_t[nBufLen];
+	wchar_t * pwszBuffer = new wchar_t[nBufLen];
     if(!pwszBuffer)
     {
         return -1;

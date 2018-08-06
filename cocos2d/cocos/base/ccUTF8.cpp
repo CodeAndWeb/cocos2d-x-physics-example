@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2014 cocos2d-x.org
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -27,30 +28,57 @@
 #include "platform/CCCommon.h"
 #include "base/CCConsole.h"
 #include "ConvertUTF.h"
+#include <limits>
 
 NS_CC_BEGIN
 
 namespace StringUtils {
 
+/*--- This a C++ universal sprintf in the future.
+**  @pitfall: The behavior of vsnprintf between VS2013 and VS2015/2017 is different
+**      VS2013 or Unix-Like System will return -1 when buffer not enough, but VS2015/2017 will return the actural needed length for buffer at this station
+**      The _vsnprintf behavior is compatible API which always return -1 when buffer isn't enough at VS2013/2015/2017
+**      Yes, The vsnprintf is more efficient implemented by MSVC 19.0 or later, AND it's also standard-compliant, see reference: http://www.cplusplus.com/reference/cstdio/vsnprintf/
+*/
 std::string format(const char* format, ...)
 {
-#define CC_MAX_STRING_LENGTH (1024*100)
-    
-    std::string ret;
-    
-    va_list ap;
-    va_start(ap, format);
-    
-    char* buf = (char*)malloc(CC_MAX_STRING_LENGTH);
-    if (buf != nullptr)
-    {
-        vsnprintf(buf, CC_MAX_STRING_LENGTH, format, ap);
-        ret = buf;
-        free(buf);
+#define CC_VSNPRINTF_BUFFER_LENGTH 512
+    va_list args;
+    std::string buffer(CC_VSNPRINTF_BUFFER_LENGTH, '\0');
+
+    va_start(args, format);
+    int nret = vsnprintf(&buffer.front(), buffer.length() + 1, format, args);
+    va_end(args);
+
+    if (nret >= 0) {
+        if ((unsigned int)nret < buffer.length()) {
+            buffer.resize(nret);
+        }
+        else if ((unsigned int)nret > buffer.length()) { // VS2015/2017 or later Visual Studio Version
+            buffer.resize(nret);
+
+            va_start(args, format);
+            nret = vsnprintf(&buffer.front(), buffer.length() + 1, format, args);
+            va_end(args);
+
+            assert(nret == buffer.length());
+        }
+        // else equals, do nothing.
     }
-    va_end(ap);
-    
-    return ret;
+    else { // less or equal VS2013 and Unix System glibc implement.
+        do {
+            buffer.resize(buffer.length() * 3 / 2);
+
+            va_start(args, format);
+            nret = vsnprintf(&buffer.front(), buffer.length() + 1, format, args);
+            va_end(args);
+
+        } while (nret < 0);
+
+        buffer.resize(nret);
+    }
+
+    return buffer;
 }
 
 /*
@@ -86,6 +114,23 @@ static void trimUTF16VectorFromIndex(std::vector<char16_t>& str, int index)
 
     str.erase(str.begin() + index, str.begin() + size);
 }
+    
+/*
+ * @str:    the string to trim
+ * @index:    the index to start trimming from.
+ *
+ * Trims str st str=[0, index) after the operation.
+ *
+ * Return value: the trimmed string.
+ * */
+static void trimUTF32VectorFromIndex(std::vector<char32_t>& str, int index)
+{
+    int size = static_cast<int>(str.size());
+    if (index >= size || index < 0)
+        return;
+    
+    str.erase(str.begin() + index, str.begin() + size);
+}
 
 /*
  * @ch is the unicode character whitespace?
@@ -94,14 +139,14 @@ static void trimUTF16VectorFromIndex(std::vector<char16_t>& str, int index)
  *
  * Return value: weather the character is a whitespace character.
  * */
-bool isUnicodeSpace(char16_t ch)
+bool isUnicodeSpace(char32_t ch)
 {
     return  (ch >= 0x0009 && ch <= 0x000D) || ch == 0x0020 || ch == 0x0085 || ch == 0x00A0 || ch == 0x1680
     || (ch >= 0x2000 && ch <= 0x200A) || ch == 0x2028 || ch == 0x2029 || ch == 0x202F
     ||  ch == 0x205F || ch == 0x3000;
 }
 
-bool isCJKUnicode(char16_t ch)
+bool isCJKUnicode(char32_t ch)
 {
     return (ch >= 0x4E00 && ch <= 0x9FBF)   // CJK Unified Ideographs
         || (ch >= 0x2E80 && ch <= 0x2FDF)   // CJK Radicals Supplement & Kangxi Radicals
@@ -110,9 +155,18 @@ bool isCJKUnicode(char16_t ch)
         || (ch >= 0xAC00 && ch <= 0xD7AF)   // Hangul Syllables
         || (ch >= 0xF900 && ch <= 0xFAFF)   // CJK Compatibility Ideographs
         || (ch >= 0xFE30 && ch <= 0xFE4F)   // CJK Compatibility Forms
-        || (ch >= 0x31C0 && ch <= 0x4DFF);  // Other extensions
+        || (ch >= 0x31C0 && ch <= 0x4DFF)   // Other extensions
+        || (ch >= 0x1f004 && ch <= 0x1f682);// Emoji
 }
-
+    
+bool isUnicodeNonBreaking(char32_t ch)
+{
+    return ch == 0x00A0   // Non-Breaking Space
+    || ch == 0x202F       // Narrow Non-Breaking Space
+    || ch == 0x2007       // Figure Space
+    || ch == 0x2060;      // Word Joiner
+}
+    
 void trimUTF16Vector(std::vector<char16_t>& str)
 {
     int len = static_cast<int>(str.size());
@@ -134,6 +188,30 @@ void trimUTF16Vector(std::vector<char16_t>& str)
         }
 
         trimUTF16VectorFromIndex(str, last_index);
+    }
+}
+    
+void trimUTF32Vector(std::vector<char32_t>& str)
+{
+    int len = static_cast<int>(str.size());
+    
+    if ( len <= 0 )
+        return;
+    
+    int last_index = len - 1;
+    
+    // Only start trimming if the last character is whitespace..
+    if (isUnicodeSpace(str[last_index]))
+    {
+        for (int i = last_index - 1; i >= 0; --i)
+        {
+            if (isUnicodeSpace(str[i]))
+                last_index = i;
+            else
+                break;
+        }
+        
+        trimUTF32VectorFromIndex(str, last_index);
     }
 }
 
@@ -338,11 +416,27 @@ void StringUTF8::replace(const std::string& newStr)
 
 std::string StringUTF8::getAsCharSequence() const
 {
-    std::string charSequence;
+    return getAsCharSequence(0, std::numeric_limits<std::size_t>::max());
+}
 
-    for (auto& charUtf8 : _str)
+std::string StringUTF8::getAsCharSequence(std::size_t pos) const
+{
+    return getAsCharSequence(pos, std::numeric_limits<std::size_t>::max());
+}
+
+std::string StringUTF8::getAsCharSequence(std::size_t pos, std::size_t len) const
+{
+    std::string charSequence;
+    std::size_t maxLen = _str.size() - pos;
+    if (len > maxLen)
     {
-        charSequence.append(charUtf8._char);
+        len = maxLen;
+    }
+
+    std::size_t endPos = len + pos;
+    while (pos < endPos)
+    {
+        charSequence.append(_str[pos++]._char);
     }
 
     return charSequence;
@@ -412,13 +506,13 @@ void cc_utf8_trim_ws(std::vector<unsigned short>* str)
 
 bool isspace_unicode(unsigned short ch)
 {
-    return StringUtils::isUnicodeSpace(ch);
+    return StringUtils::isUnicodeSpace(static_cast<char32_t>(ch));
 }
 
 
 bool iscjk_unicode(unsigned short ch)
 {
-    return StringUtils::isCJKUnicode(ch);
+    return StringUtils::isCJKUnicode(static_cast<char32_t>(ch));
 }
 
 

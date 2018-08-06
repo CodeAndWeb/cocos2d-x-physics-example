@@ -1,5 +1,6 @@
 /****************************************************************************
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -313,6 +314,16 @@ void ImageView::setGLProgramState(cocos2d::GLProgramState* glProgramState)
 {
     Widget::setGLProgramState(glProgramState);
     _imageRenderer->setGLProgramState(glProgramState);
+}
+
+void ImageView::setBlendFunc(const BlendFunc &blendFunc)
+{
+    _imageRenderer->setBlendFunc(blendFunc);
+}
+    
+const BlendFunc& ImageView::getBlendFunc() const
+{
+    return _imageRenderer->getBlendFunc();
 }
 
 }

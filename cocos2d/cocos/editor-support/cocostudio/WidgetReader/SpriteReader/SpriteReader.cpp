@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2014 cocos2d-x.org
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -180,7 +181,6 @@ namespace cocostudio
         int resourceType = fileNameData->resourceType();
         std::string path = fileNameData->path()->c_str();
         
-        bool fileExist = false;
         std::string errorFilePath = "";
         
         switch (resourceType)
@@ -190,12 +190,10 @@ namespace cocostudio
                 if (FileUtils::getInstance()->isFileExist(path))
                 {
                     sprite->setTexture(path);
-                    fileExist = true;
                 }
                 else
                 {
                     errorFilePath = path;
-                    fileExist = false;
                 }
                 break;
             }
@@ -207,7 +205,6 @@ namespace cocostudio
                 if (spriteFrame)
                 {
                     sprite->setSpriteFrame(spriteFrame);
-                    fileExist = true;
                 }
                 else
                 {
@@ -225,7 +222,6 @@ namespace cocostudio
                     {
                         errorFilePath = plist;
                     }
-                    fileExist = false;
                 }
                 break;
             }

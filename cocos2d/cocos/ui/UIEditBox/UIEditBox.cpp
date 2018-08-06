@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2012 James Chen
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -32,27 +33,18 @@ namespace ui {
 
 static const float CHECK_EDITBOX_POSITION_INTERVAL = 0.1f;
 
-EditBox::EditBox(void)
+EditBox::EditBox()
 : _editBoxImpl(nullptr)
 , _delegate(nullptr)
-, _editBoxInputMode(EditBox::InputMode::SINGLE_LINE)
-, _editBoxInputFlag(EditBox::InputFlag::LOWERCASE_ALL_CHARACTERS)
-, _keyboardReturnType(KeyboardReturnType::DEFAULT)
 , _backgroundSprite(nullptr)
-, _fontSize(-1)
-, _placeholderFontSize(-1)
-, _colText(Color3B::WHITE)
-, _colPlaceHolder(Color3B::GRAY)
-, _maxLength(0)
-, _adjustHeight(0.0f)
-, _alignment(cocos2d::TextHAlignment::LEFT)
+, _adjustHeight(0.f)
 #if CC_ENABLE_SCRIPT_BINDING
 , _scriptEditBoxHandler(0)
 #endif
 {
 }
 
-EditBox::~EditBox(void)
+EditBox::~EditBox()
 {
     CC_SAFE_DELETE(_editBoxImpl);
 #if CC_ENABLE_SCRIPT_BINDING
@@ -182,7 +174,6 @@ void EditBox::setText(const char* pText)
 {
     if (pText != nullptr)
     {
-        _text = pText;
         if (_editBoxImpl != nullptr)
         {
             _editBoxImpl->setText(pText);
@@ -190,7 +181,7 @@ void EditBox::setText(const char* pText)
     }
 }
 
-const char* EditBox::getText(void)
+const char* EditBox::getText() const
 {
     if (_editBoxImpl != nullptr)
     {
@@ -205,8 +196,6 @@ const char* EditBox::getText(void)
 void EditBox::setFont(const char* pFontName, int fontSize)
 {
     CCASSERT(pFontName != nullptr, "fontName can't be nullptr");
-    _fontName = pFontName;
-    _fontSize = fontSize;
     if (pFontName != nullptr)
     {
         if (_editBoxImpl != nullptr)
@@ -219,22 +208,37 @@ void EditBox::setFont(const char* pFontName, int fontSize)
 void EditBox::setFontName(const char* pFontName)
 {
     CCASSERT(pFontName != nullptr, "fontName can't be nullptr");
-    _fontName = pFontName;
     if (_editBoxImpl != nullptr)
     {
-        _editBoxImpl->setFont(pFontName, _fontSize);
+        _editBoxImpl->setFont(pFontName, _editBoxImpl->getFontSize());
     }
+}
+
+const char* EditBox::getFontName() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getFontName();
+    }
+    return "";
 }
 
 void EditBox::setFontSize(int fontSize)
 {
-    _fontSize = fontSize;
     if (_editBoxImpl != nullptr)
     {
-        _editBoxImpl->setFont(_fontName.c_str(), _fontSize);
+        _editBoxImpl->setFont(_editBoxImpl->getFontName(), fontSize);
     }
 }
 
+int EditBox::getFontSize() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getFontSize();
+    }
+    return -1;
+}
 void EditBox::setFontColor(const Color3B& color)
 {
     setFontColor(Color4B(color));
@@ -242,18 +246,24 @@ void EditBox::setFontColor(const Color3B& color)
 
 void EditBox::setFontColor(const Color4B& color)
 {
-    _colText = color;
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setFontColor(color);
     }
 }
 
+const Color4B& EditBox::getFontColor() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getFontColor();
+    }
+    return Color4B::WHITE;
+}
+
 void EditBox::setPlaceholderFont(const char* pFontName, int fontSize)
 {
     CCASSERT(pFontName != nullptr, "fontName can't be nullptr");
-    _placeholderFontName = pFontName;
-    _placeholderFontSize = fontSize;
     if (pFontName != nullptr)
     {
         if (_editBoxImpl != nullptr)
@@ -266,20 +276,36 @@ void EditBox::setPlaceholderFont(const char* pFontName, int fontSize)
 void EditBox::setPlaceholderFontName(const char* pFontName)
 {
     CCASSERT(pFontName != nullptr, "fontName can't be nullptr");
-    _placeholderFontName = pFontName;
     if (_editBoxImpl != nullptr)
     {
-        _editBoxImpl->setPlaceholderFont(pFontName, _placeholderFontSize);
+        _editBoxImpl->setPlaceholderFont(pFontName, _editBoxImpl->getPlaceholderFontSize());
     }
+}
+
+const char* EditBox::getPlaceholderFontName() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getPlaceholderFontName();
+    }
+    return "";
 }
 
 void EditBox::setPlaceholderFontSize(int fontSize)
 {
-    _placeholderFontSize = fontSize;
     if (_editBoxImpl != nullptr)
     {
-        _editBoxImpl->setPlaceholderFont(_placeholderFontName.c_str(), fontSize);
+        _editBoxImpl->setPlaceholderFont(_editBoxImpl->getPlaceholderFontName(), fontSize);
     }
+}
+
+int EditBox::getPlaceholderFontSize() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getPlaceholderFontSize();
+    }
+    return -1;
 }
 
 void EditBox::setPlaceholderFontColor(const Color3B& color)
@@ -289,18 +315,25 @@ void EditBox::setPlaceholderFontColor(const Color3B& color)
 
 void EditBox::setPlaceholderFontColor(const Color4B& color)
 {
-    _colPlaceHolder = color;
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setPlaceholderFontColor(color);
     }
 }
 
+const Color4B& EditBox::getPlaceholderFontColor() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getPlaceholderFontColor();
+    }
+    return Color4B::GRAY;
+}
+
 void EditBox::setPlaceHolder(const char* pText)
 {
     if (pText != nullptr)
     {
-        _placeHolder = pText;
         if (_editBoxImpl != nullptr)
         {
             _editBoxImpl->setPlaceHolder(pText);
@@ -308,23 +341,34 @@ void EditBox::setPlaceHolder(const char* pText)
     }
 }
 
-const char* EditBox::getPlaceHolder(void)
+const char* EditBox::getPlaceHolder() const
 {
-    return _placeHolder.c_str();
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getPlaceHolder();
+    }
+    return "";
 }
 
 void EditBox::setInputMode(EditBox::InputMode inputMode)
 {
-    _editBoxInputMode = inputMode;
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setInputMode(inputMode);
     }
 }
 
+EditBox::InputMode EditBox::getInputMode() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getInputMode();
+    }
+    return InputMode::SINGLE_LINE;
+}
+
 void EditBox::setMaxLength(int maxLength)
 {
-    _maxLength = maxLength;
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setMaxLength(maxLength);
@@ -334,16 +378,28 @@ void EditBox::setMaxLength(int maxLength)
 
 int EditBox::getMaxLength()
 {
-    return _maxLength;
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getMaxLength();
+    }
+    return -1;
 }
 
 void EditBox::setInputFlag(EditBox::InputFlag inputFlag)
 {
-    _editBoxInputFlag = inputFlag;
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setInputFlag(inputFlag);
     }
+}
+
+EditBox::InputFlag EditBox::getInputFlag() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getInputFlag();
+    }
+    return InputFlag::LOWERCASE_ALL_CHARACTERS;
 }
 
 void EditBox::setReturnType(EditBox::KeyboardReturnType returnType)
@@ -354,12 +410,30 @@ void EditBox::setReturnType(EditBox::KeyboardReturnType returnType)
     }
 }
 
-  void EditBox::setTextHorizontalAlignment(cocos2d::TextHAlignment alignment)
+EditBox::KeyboardReturnType EditBox::getReturnType() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getReturnType();
+    }
+    return KeyboardReturnType::DEFAULT;
+}
+
+void EditBox::setTextHorizontalAlignment(TextHAlignment alignment)
 {
     if (_editBoxImpl != nullptr)
     {
         _editBoxImpl->setTextHorizontalAlignment(alignment);
     }
+}
+
+TextHAlignment EditBox::getTextHorizontalAlignment() const
+{
+    if (_editBoxImpl != nullptr)
+    {
+        return _editBoxImpl->getTextHorizontalAlignment();
+    }
+    return TextHAlignment::LEFT;
 }
 
 /* override function */
@@ -422,7 +496,7 @@ void EditBox::draw(Renderer *renderer, const Mat4 &parentTransform, uint32_t par
     }
 }
 
-void EditBox::onEnter(void)
+void EditBox::onEnter()
 {
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)
@@ -450,7 +524,7 @@ void EditBox::updatePosition(float dt)
 }
 
 
-void EditBox::onExit(void)
+void EditBox::onExit()
 {
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)
@@ -525,7 +599,7 @@ void EditBox::registerScriptEditBoxHandler(int handler)
     _scriptEditBoxHandler = handler;
 }
 
-void EditBox::unregisterScriptEditBoxHandler(void)
+void EditBox::unregisterScriptEditBoxHandler()
 {
     if (0 != _scriptEditBoxHandler)
     {

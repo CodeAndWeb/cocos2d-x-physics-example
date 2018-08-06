@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2015 Chukong Technologies Inc.
+ Copyright (c) 2015-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -34,10 +35,10 @@
 NS_CC_BEGIN
 
 NavMeshDebugDraw::NavMeshDebugDraw()
-: _primitiveType(GL_POINTS)
-, _dirtyBuffer(true)
-, _currentPrimitive(nullptr)
+: _currentPrimitive(nullptr)
+, _primitiveType(GL_POINTS)
 , _currentDepthMask(true)
+, _dirtyBuffer(true)
 {
     _stateBlock = RenderState::StateBlock::create();
     _stateBlock->setCullFace(true);

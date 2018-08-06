@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -125,13 +126,12 @@ Mesh::Mesh()
 : _skin(nullptr)
 , _visible(true)
 , _isTransparent(false)
+, _force2DQueue(false)
 , _meshIndexData(nullptr)
-, _material(nullptr)
 , _glProgramState(nullptr)
 , _blend(BlendFunc::ALPHA_NON_PREMULTIPLIED)
-, _visibleChanged(nullptr)
 , _blendDirty(true)
-, _force2DQueue(false)
+, _material(nullptr)
 , _texFile("")
 {
     
@@ -372,7 +372,7 @@ Material* Mesh::getMaterial() const
     return _material;
 }
 
-void Mesh::draw(Renderer* renderer, float globalZOrder, const Mat4& transform, uint32_t flags, unsigned int lightMask, const Vec4& color, bool /*forceDepthWrite*/)
+void Mesh::draw(Renderer* renderer, float globalZOrder, const Mat4& transform, uint32_t flags, unsigned int lightMask, const Vec4& color, bool forceDepthWrite)
 {
     if (! isVisible())
         return;
@@ -393,9 +393,9 @@ void Mesh::draw(Renderer* renderer, float globalZOrder, const Mat4& transform, u
                       flags);
 
 
-//    if (isTransparent && !forceDepthWrite)
-//        _material->getStateBlock()->setDepthWrite(false);
-//    else
+   if (isTransparent && !forceDepthWrite)
+       _material->getStateBlock()->setDepthWrite(false);
+   else
         _material->getStateBlock()->setDepthWrite(true);
 
 

@@ -1,6 +1,7 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -40,6 +41,7 @@ extern "C"
 #ifndef __ENABLE_COMPATIBILITY_WITH_UNIX_2003__
 #define __ENABLE_COMPATIBILITY_WITH_UNIX_2003__
 #include <stdio.h>
+#include <dirent.h>
     FILE *fopen$UNIX2003( const char *filename, const char *mode )
     {
         return fopen(filename, mode);
@@ -48,9 +50,30 @@ extern "C"
     {
         return fwrite(a, b, c, d);
     }
+    int fputs$UNIX2003(const char *res1, FILE *res2){
+        return fputs(res1,res2);
+    }
     char *strerror$UNIX2003( int errnum )
     {
         return strerror(errnum);
+    }
+    DIR * opendir$INODE64$UNIX2003( char * dirName )
+    {
+        return opendir( dirName );
+    }
+    DIR * opendir$INODE64( char * dirName )
+    {
+        return opendir( dirName );
+    }
+
+    int closedir$UNIX2003(DIR * dir)
+    {
+        return closedir(dir);
+    }
+
+    struct dirent * readdir$INODE64( DIR * dir )
+    {
+        return readdir( dir );
     }
 #endif
 #endif
@@ -67,6 +90,7 @@ extern "C"
     
 #if CC_USE_JPEG
 #include "jpeglib.h"
+#include <setjmp.h>
 #endif // CC_USE_JPEG
 }
 #include "base/s3tc.h"
@@ -413,7 +437,7 @@ namespace
         int offset;
     }tImageSource;
  
-#ifdef CC_USE_PNG
+#if CC_USE_PNG
     static void pngReadCallback(png_structp png_ptr, png_bytep data, png_size_t length)
     {
         tImageSource* isource = (tImageSource*)png_get_io_ptr(png_ptr);
@@ -888,9 +912,8 @@ bool Image::encodeWithWIC(const std::string& filePath, bool isToRGB, GUID contai
         std::swap(pSaveData[ind - 2], pSaveData[ind]);
     }
 
-    bool bRet = false;
     WICImageLoader img;
-    bRet = img.encodeImageData(filePath, pSaveData, saveLen, targetFormat, _width, _height, containerFormat);
+    bool bRet = img.encodeImageData(filePath, pSaveData, saveLen, targetFormat, _width, _height, containerFormat);
 
     delete[] pSaveData;
     return bRet;
@@ -1076,7 +1099,6 @@ bool Image::initWithPngData(const unsigned char * data, ssize_t dataLen)
         }
         // update info
         png_read_update_info(png_ptr, info_ptr);
-        bit_depth = png_get_bit_depth(png_ptr, info_ptr);
         color_type = png_get_color_type(png_ptr, info_ptr);
 
         switch (color_type)
@@ -2201,7 +2223,6 @@ bool Image::saveImageToPNG(const std::string& filePath, bool isToRGB)
         FILE *fp;
         png_structp png_ptr;
         png_infop info_ptr;
-        png_colorp palette;
         png_bytep *row_pointers;
 
         fp = fopen(FileUtils::getInstance()->getSuitableFOpen(filePath).c_str(), "wb");
@@ -2242,10 +2263,7 @@ bool Image::saveImageToPNG(const std::string& filePath, bool isToRGB)
             png_set_IHDR(png_ptr, info_ptr, _width, _height, 8, PNG_COLOR_TYPE_RGB,
                 PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
         }
-
-        palette = (png_colorp)png_malloc(png_ptr, PNG_MAX_PALETTE_LENGTH * sizeof (png_color));
-        png_set_PLTE(png_ptr, info_ptr, palette, PNG_MAX_PALETTE_LENGTH);
-
+        
         png_write_info(png_ptr, info_ptr);
 
         png_set_packing(png_ptr);
@@ -2325,9 +2343,6 @@ bool Image::saveImageToPNG(const std::string& filePath, bool isToRGB)
         }
 
         png_write_end(png_ptr, info_ptr);
-
-        png_free(png_ptr, palette);
-        palette = nullptr;
 
         png_destroy_write_struct(&png_ptr, &info_ptr);
 

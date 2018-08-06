@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2012 cocos2d-x.org
  Copyright (c) 2010 Sangwoo Im
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -202,6 +203,7 @@ public:
      */
     TableViewDataSource* getDataSource() { return _dataSource; }
     /**
+     * @code
      * when this function bound to js or lua,the input params are changed
      * in js:var setDataSource(var jsSource)
      * in lua:local setDataSource()

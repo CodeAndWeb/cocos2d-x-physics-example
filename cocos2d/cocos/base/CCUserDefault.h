@@ -1,6 +1,7 @@
 /****************************************************************************
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -43,6 +44,9 @@ NS_CC_BEGIN
  * 
  * It supports the following base types:
  * bool, int, float, double, string
+ *
+ * @warning: On windows, linux, use XML to store data, which means there are some limitations of
+ * the key string, for example, `/` is not valid.
  */
 class CC_DLL UserDefault
 {
@@ -231,7 +235,7 @@ public:
     */
     static void setDelegate(UserDefault *delegate);
 
-    /** @deprecated Use getInstace() instead.
+    /** @deprecated Use getInstance() instead.
      * @js NA
      * @lua NA
      */

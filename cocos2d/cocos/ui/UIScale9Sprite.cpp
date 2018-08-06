@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -154,16 +155,18 @@ bool Scale9Sprite::initWithFile(const Rect& capInsets, const std::string& file)
 bool Scale9Sprite::initWithFile(const std::string& filename)
 {
     // calls super
+    auto originalCapInsets = this->getCapInsets();
     bool ret = Sprite::initWithFile(filename);
-    setupSlice9(getTexture(), Rect::ZERO);
+    setupSlice9(getTexture(), originalCapInsets);
     return ret;
 }
 
 bool Scale9Sprite::initWithFile(const std::string& filename, const Rect& rect)
 {
     // calls super
+    auto originalCapInsets = this->getCapInsets();
     bool ret = Sprite::initWithFile(filename, rect);
-    setupSlice9(getTexture(), Rect::ZERO);
+    setupSlice9(getTexture(), originalCapInsets);
     return ret;
 }
 
@@ -186,8 +189,9 @@ bool Scale9Sprite::initWithSpriteFrameName(const std::string& spriteFrameName, c
 bool Scale9Sprite::initWithSpriteFrameName(const std::string& spriteFrameName)
 {
     // calls super
+    auto originalCapInsets = this->getCapInsets();
     bool ret = Sprite::initWithSpriteFrameName(spriteFrameName);
-    setupSlice9(getTexture(), Rect::ZERO);
+    setupSlice9(getTexture(), originalCapInsets);
     return ret;
 }
 
@@ -429,9 +433,9 @@ void Scale9Sprite::setScale9Enabled(bool enabled)
     RenderingType type = enabled ? RenderingType::SLICE : RenderingType::SIMPLE;
     setRenderingType(type);
 
-    // only enable strech when scale9 is enabled
-    // for backward compatibiliy, since Sprite streches the texture no matter the rendering type
-    setStrechEnabled(enabled);
+    // only enable stretch when scale9 is enabled
+    // for backward compatibility, since Sprite stretches the texture no matter the rendering type
+    setStretchEnabled(enabled);
 }
 
 bool Scale9Sprite::isScale9Enabled() const
@@ -611,5 +615,8 @@ void Scale9Sprite::setCapInsets(const cocos2d::Rect &insetsCopy)
 
 Rect Scale9Sprite::getCapInsets() const
 {
-    return getCenterRect();
+    return Rect(_insetLeft,
+                _insetTop,
+                _originalContentSize.width - _insetLeft - _insetRight,
+                _originalContentSize.height - _insetTop - _insetBottom);
 }

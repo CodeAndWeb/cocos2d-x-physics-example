@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -23,7 +24,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "base/CCStencilStateManager.hpp"
+#include "base/CCStencilStateManager.h"
 #include "base/CCDirector.h"
 #include "renderer/CCGLProgramCache.h"
 #include "renderer/ccGLStateCache.h"

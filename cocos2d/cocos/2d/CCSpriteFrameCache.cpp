@@ -5,6 +5,7 @@ Copyright (c) 2009      Robert J Payne
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2016 Chukong Technologies Inc.
+Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
 http://www.cocos2d-x.org
 
@@ -384,10 +385,10 @@ void SpriteFrameCache::addSpriteFramesWithFile(const std::string& plist, const s
 
 void SpriteFrameCache::addSpriteFramesWithFile(const std::string& plist)
 {
-    CCASSERT(plist.size()>0, "plist filename should not be nullptr");
+    CCASSERT(!plist.empty(), "plist filename should not be nullptr");
     
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(plist);
-    if (fullPath.size() == 0)
+    if (fullPath.empty())
     {
         // return if plist file doesn't exist
         CCLOG("cocos2d: SpriteFrameCache: can not find %s", plist.c_str());
@@ -396,7 +397,6 @@ void SpriteFrameCache::addSpriteFramesWithFile(const std::string& plist)
 
     if (_loadedFileNames->find(plist) == _loadedFileNames->end())
     {
-        
         ValueMap dict = FileUtils::getInstance()->getValueMapFromFile(fullPath);
 
         string texturePath("");
@@ -487,11 +487,12 @@ void SpriteFrameCache::removeUnusedSpriteFrames()
 void SpriteFrameCache::removeSpriteFrameByName(const std::string& name)
 {
     // explicit nil handling
-    if( !(name.size()>0) )
+    if (name.empty())
         return;
 
     // Is this an alias ?
-    std::string key = _spriteFramesAliases[name].asString();
+    bool foundAlias = _spriteFramesAliases.find(name) != _spriteFramesAliases.end();
+    std::string key = foundAlias ? _spriteFramesAliases[name].asString() : "";
 
     if (!key.empty())
     {
@@ -542,7 +543,7 @@ void SpriteFrameCache::removeSpriteFramesFromDictionary(ValueMap& dictionary)
     if (dictionary["frames"].getType() != cocos2d::Value::Type::MAP)
         return;
 
-    ValueMap framesDict = dictionary["frames"].asValueMap();
+    const ValueMap& framesDict = dictionary["frames"].asValueMap();
     std::vector<std::string> keysToRemove;
 
     for (const auto& iter : framesDict)
@@ -579,14 +580,21 @@ SpriteFrame* SpriteFrameCache::getSpriteFrameByName(const std::string& name)
     if (!frame)
     {
         // try alias dictionary
-        std::string key = _spriteFramesAliases[name].asString();
-        if (!key.empty())
+        if (_spriteFramesAliases.find(name) != _spriteFramesAliases.end())
         {
-            frame = _spriteFrames.at(key);
-            if (!frame)
+            std::string key = _spriteFramesAliases[name].asString();
+            if (!key.empty())
             {
-                CCLOG("cocos2d: SpriteFrameCache: Frame '%s' not found", name.c_str());
+                frame = _spriteFrames.at(key);
+                if (!frame)
+                {
+                    CCLOG("cocos2d: SpriteFrameCache: Frame aliases '%s' isn't found", key.c_str());
+                }
             }
+        }
+        else
+        {
+            CCLOG("cocos2d: SpriteFrameCache: Frame '%s' isn't found", name.c_str());
         }
     }
     return frame;

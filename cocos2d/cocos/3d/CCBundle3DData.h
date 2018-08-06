@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2014 Chukong Technologies Inc.
+ Copyright (c) 2014-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -59,7 +60,7 @@ struct MeshVertexAttrib
 struct ModelData
 {
     std::string subMeshId;
-    std::string matrialId;
+    std::string materialId;
     std::vector<std::string> bones;
     std::vector<Mat4>        invBindPose;
     

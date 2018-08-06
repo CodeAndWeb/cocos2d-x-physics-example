@@ -1,6 +1,7 @@
 /****************************************************************************
  Copyright (c) 2013      Zynga Inc.
  Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
 
@@ -72,50 +73,66 @@ void Label::computeAlignmentOffset()
     }
 }
 
-int Label::getFirstCharLen(const std::u16string& /*utf16Text*/, int /*startIndex*/, int /*textLen*/)
+int Label::getFirstCharLen(const std::u32string& /*utf32Text*/, int /*startIndex*/, int /*textLen*/) const
 {
     return 1;
 }
 
-int Label::getFirstWordLen(const std::u16string& utf16Text, int startIndex, int textLen)
+int Label::getFirstWordLen(const std::u32string& utf32Text, int startIndex, int textLen) const
 {
-    auto character = utf16Text[startIndex];
-    if (StringUtils::isCJKUnicode(character) || StringUtils::isUnicodeSpace(character) || character == (char16_t)TextFormatter::NewLine)
-    {
-        return 1;
-    }
-
-    int len = 1;
-    FontLetterDefinition letterDef;
+    int len = 0;
     auto nextLetterX = 0;
+    FontLetterDefinition letterDef;
     auto contentScaleFactor = CC_CONTENT_SCALE_FACTOR();
-    for (int index = startIndex + 1; index < textLen; ++index)
+
+    for (int index = startIndex; index < textLen; ++index)
     {
-        character = utf16Text[index];
-        if (_fontAtlas->getLetterDefinitionForChar(character, letterDef) == false)
+        char32_t character = utf32Text[index];
+
+        if (character == StringUtils::UnicodeCharacters::NewLine
+            || (!StringUtils::isUnicodeNonBreaking(character)
+                && (StringUtils::isUnicodeSpace(character)
+                    || StringUtils::isCJKUnicode(character))))
         {
             break;
         }
 
-        auto letterX = (nextLetterX + letterDef.offsetX * _bmfontScale) / contentScaleFactor;
-        if (_maxLineWidth > 0.f && letterX + letterDef.width * _bmfontScale > _maxLineWidth
-            && !StringUtils::isUnicodeSpace(character))
+        if (!getFontLetterDef(character, letterDef))
         {
-            if(len >= 2) {
-                return len -1;
-            }
+            break;
+        }
+
+        if (_maxLineWidth > 0.f)
+        {
+            auto letterX = (nextLetterX + letterDef.offsetX * _bmfontScale) / contentScaleFactor;
+
+            if (letterX + letterDef.width * _bmfontScale > _maxLineWidth)
+                break;
         }
 
         nextLetterX += letterDef.xAdvance * _bmfontScale + _additionalKerning;
 
-        if (character == (char16_t)TextFormatter::NewLine || StringUtils::isUnicodeSpace(character) || StringUtils::isCJKUnicode(character))
-        {
-            break;
-        }
         len++;
     }
 
+    if (len == 0 && textLen)
+        len = 1;
+
     return len;
+}
+
+bool Label::getFontLetterDef(char32_t character, FontLetterDefinition& letterDef) const
+{
+    if (character == StringUtils::UnicodeCharacters::NoBreakSpace)
+    {
+        // change no-break space to regular space
+        // reason: some fonts have issue with no-break space:
+        //   * no letter definition
+        //   * not normal big width
+        character = StringUtils::UnicodeCharacters::Space;
+    }
+
+    return _fontAtlas->getLetterDefinitionForChar(character, letterDef);
 }
 
 void Label::updateBMFontScale()
@@ -130,7 +147,7 @@ void Label::updateBMFontScale()
     }
 }
 
-bool Label::multilineTextWrap(const std::function<int(const std::u16string&, int, int)>& nextTokenLen)
+bool Label::multilineTextWrap(const std::function<int(const std::u32string&, int, int)>& nextTokenLen)
 {
     int textLen = getStringLength();
     int lineIndex = 0;
@@ -151,8 +168,8 @@ bool Label::multilineTextWrap(const std::function<int(const std::u16string&, int
 
     for (int index = 0; index < textLen; )
     {
-        auto character = _utf16Text[index];
-        if (character == (char16_t)TextFormatter::NewLine)
+        char32_t character = _utf32Text[index];
+        if (character == StringUtils::UnicodeCharacters::NewLine)
         {
             _linesWidth.push_back(letterRight);
             letterRight = 0.f;
@@ -164,7 +181,7 @@ bool Label::multilineTextWrap(const std::function<int(const std::u16string&, int
             continue;
         }
 
-        auto tokenLen = nextTokenLen(_utf16Text, index, textLen);
+        auto tokenLen = nextTokenLen(_utf32Text, index, textLen);
         float tokenHighestY = highestY;
         float tokenLowestY = lowestY;
         float tokenRight = letterRight;
@@ -173,23 +190,24 @@ bool Label::multilineTextWrap(const std::function<int(const std::u16string&, int
         for (int tmp = 0; tmp < tokenLen;++tmp)
         {
             int letterIndex = index + tmp;
-            character = _utf16Text[letterIndex];
-            if (character == (char16_t)TextFormatter::CarriageReturn)
+            character = _utf32Text[letterIndex];
+            if (character == StringUtils::UnicodeCharacters::CarriageReturn)
             {
                 recordPlaceholderInfo(letterIndex, character);
                 continue;
             }
             // \b - Next char not change x position
-            if (character == (char16_t)TextFormatter::NextCharNoChangeX)
+            if (character == StringUtils::UnicodeCharacters::NextCharNoChangeX)
             {
                 nextChangeSize = false;
                 recordPlaceholderInfo(letterIndex, character);
                 continue;
             }
-            if (_fontAtlas->getLetterDefinitionForChar(character, letterDef) == false)
+
+            if (!getFontLetterDef(character, letterDef))
             {
                 recordPlaceholderInfo(letterIndex, character);
-                CCLOG("LabelTextFormatter error:can't find letter definition in font file for letter: %c", character);
+                CCLOG("LabelTextFormatter error: can't find letter definition in font file for letter: 0x%x", character);
                 continue;
             }
 
@@ -218,7 +236,10 @@ bool Label::multilineTextWrap(const std::function<int(const std::u16string&, int
                     nextLetterX += _horizontalKernings[letterIndex + 1];
                 nextLetterX += letterDef.xAdvance * _bmfontScale + _additionalKerning;
 
-                tokenRight = nextLetterX / contentScaleFactor;
+                if (tokenLen != 1 || !StringUtils::isUnicodeSpace(character))
+                {
+                    tokenRight = nextLetterX / contentScaleFactor;
+                }
             }
             nextChangeSize = true;
 
@@ -297,7 +318,7 @@ bool Label::isHorizontalClamp()
     {
         if (_lettersInfo[ctr].valid)
         {
-            auto& letterDef = _fontAtlas->_letterDefinitions[_lettersInfo[ctr].utf16Char];
+            auto& letterDef = _fontAtlas->_letterDefinitions[_lettersInfo[ctr].utf32Char];
 
             auto px = _lettersInfo[ctr].positionX + letterDef.width/2 * _bmfontScale;
             auto lineIndex = _lettersInfo[ctr].lineIndex;
@@ -366,7 +387,7 @@ void Label::shrinkLabelToContentSize(const std::function<bool(void)>& lambda)
     }
 }
 
-void Label::recordLetterInfo(const cocos2d::Vec2& point, char16_t utf16Char, int letterIndex, int lineIndex)
+void Label::recordLetterInfo(const cocos2d::Vec2& point, char32_t utf32Char, int letterIndex, int lineIndex)
 {
     if (static_cast<std::size_t>(letterIndex) >= _lettersInfo.size())
     {
@@ -374,20 +395,21 @@ void Label::recordLetterInfo(const cocos2d::Vec2& point, char16_t utf16Char, int
         _lettersInfo.push_back(tmpInfo);
     }
     _lettersInfo[letterIndex].lineIndex = lineIndex;
-    _lettersInfo[letterIndex].utf16Char = utf16Char;
-    _lettersInfo[letterIndex].valid = _fontAtlas->_letterDefinitions[utf16Char].validDefinition;
+    _lettersInfo[letterIndex].utf32Char = utf32Char;
+    _lettersInfo[letterIndex].valid = _fontAtlas->_letterDefinitions[utf32Char].validDefinition;
     _lettersInfo[letterIndex].positionX = point.x;
     _lettersInfo[letterIndex].positionY = point.y;
+    _lettersInfo[letterIndex].atlasIndex = -1;
 }
 
-void Label::recordPlaceholderInfo(int letterIndex, char16_t utf16Char)
+void Label::recordPlaceholderInfo(int letterIndex, char32_t utf32Char)
 {
     if (static_cast<std::size_t>(letterIndex) >= _lettersInfo.size())
     {
         LetterInfo tmpInfo;
         _lettersInfo.push_back(tmpInfo);
     }
-    _lettersInfo[letterIndex].utf16Char = utf16Char;
+    _lettersInfo[letterIndex].utf32Char = utf32Char;
     _lettersInfo[letterIndex].valid = false;
 }
 

@@ -2,6 +2,7 @@
  Copyright (c) 2010-2012 cocos2d-x.org
  Copyright (c) 2012 James Chen
  Copyright (c) 2013-2015 zilongshanren
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos2d-x.org
  
@@ -63,12 +64,26 @@ public:
     virtual void setPlaceHolder(const char* pText) override;
     virtual void setVisible(bool visible) override;
 
-
     virtual void setMaxLength(int maxLength) override;
-    virtual int  getMaxLength() override;
-    virtual void setTextHorizontalAlignment(cocos2d::TextHAlignment alignment) override;
+    virtual void setTextHorizontalAlignment(TextHAlignment alignment) override;
 
-    virtual const char* getText(void) override;
+    virtual int  getMaxLength() override { return _maxLength; }
+    virtual const char* getText(void) override { return _text.c_str(); }
+    virtual const char* getPlaceHolder(void) override { return _placeHolder.c_str(); }
+
+    virtual const char* getFontName() override { return _fontName.c_str(); }
+    virtual int getFontSize() override { return _fontSize; }
+    virtual const Color4B& getFontColor() override { return _colText; }
+
+    virtual const char* getPlaceholderFontName() override { return _placeholderFontName.c_str(); }
+    virtual int getPlaceholderFontSize() override { return _placeholderFontSize; }
+    virtual const Color4B& getPlaceholderFontColor() override { return _colPlaceHolder; }
+
+    virtual EditBox::InputMode getInputMode() override { return _editBoxInputMode; }
+    virtual EditBox::InputFlag getInputFlag() override { return _editBoxInputFlag; }
+    virtual EditBox::KeyboardReturnType getReturnType() override { return _keyboardReturnType; }
+    virtual TextHAlignment getTextHorizontalAlignment() override { return _alignment; }
+
     virtual void refreshInactiveText();
     
     virtual void setContentSize(const Size& size) override;
@@ -115,13 +130,13 @@ public:
     virtual void setNativeMaxLength(int maxLength) {};
 
 
-private:
+protected:
     void         initInactiveLabels(const Size& size);
     void         setInactiveText(const char* pText);
     void         refreshLabelAlignment();
     void         placeInactiveLabels(const Size& size);
     virtual void doAnimationWhenKeyboardMove(float duration, float distance)override {};
-
+  
     Label* _label;
     Label* _labelPlaceHolder;
     EditBox::InputMode    _editBoxInputMode;
@@ -131,12 +146,19 @@ private:
 
     std::string _text;
     std::string _placeHolder;
-    
+
+    std::string _fontName;
+    std::string _placeholderFontName;
+
+    int _fontSize;
+    int _placeholderFontSize;
+
     Color4B _colText;
     Color4B _colPlaceHolder;
     
     int   _maxLength;
     Size _contentSize;
+    bool _editingMode;
 };
 
 
