@@ -70,7 +70,7 @@
                         <key>density</key>
                         <real>1</real>
                         <key>restitution</key>
-                        <real>1</real>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
                         <key>tag</key>
@@ -153,7 +153,7 @@
                         <key>density</key>
                         <real>2</real>
                         <key>restitution</key>
-                        <real>0.5</real>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.7</real>
                         <key>tag</key>
@@ -585,7 +585,7 @@
                         <key>density</key>
                         <real>1</real>
                         <key>restitution</key>
-                        <real>0.99</real>
+                        <real>0.2</real>
                         <key>friction</key>
                         <real>0.1</real>
                         <key>tag</key>

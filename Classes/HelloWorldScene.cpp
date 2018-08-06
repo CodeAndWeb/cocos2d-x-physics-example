@@ -10,7 +10,7 @@ Scene* HelloWorld::createScene()
     auto scene = Scene::createWithPhysics();
     
     // set gravity
-    scene->getPhysicsWorld()->setGravity(Vec2(0, -900));
+    scene->getPhysicsWorld()->setGravity(Vec2(0, -500));
 
     // optional: set debug draw
     // scene->getPhysicsWorld()->setDebugDrawMask(0xffff);
