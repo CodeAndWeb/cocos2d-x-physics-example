@@ -1,9 +1,11 @@
-PhysicsEditor-Cocos2d-x
-========================
+cocos2d-x-physics-example
+=========================
 
-This simple application demonstrates how you can use PhysicsEditor together Cocos2d-x and its integrated physics engine.
+This project contains the source code and assets for [this tutorial](https://www.codeandweb.com/physicseditor/tutorials/creating-physics-shapes-for-cocos2d-x).
+It demonstrates how you can use PhysicsEditor together Cocos2d-x and its integrated physics engine.
 
-The probject runs on iOS. 
+
+The project runs on iOS. 
 
 For other platforms: Please add the files from the Classes folder and the Resources to your project. 
 
